@@ -22,6 +22,8 @@ pub struct TopicItem {
   pub last_updated_at: String,
   pub is_following: bool,
   pub is_muted: bool,
+  pub new_count: i32,
+  pub confidence: f64,
 }
 
 /// Response type for get_topic_detail IPC (flat structure to match frontend)
@@ -371,11 +373,29 @@ pub fn get_topics_list(
       .map_err(|e| e.to_string())?
   };
 
+  let now = chrono::Utc::now().naive_utc();
   let mut items: Vec<TopicItem> = topic_models
     .into_iter()
     .map(|t| {
       let is_following = followed_ids.contains(&t.id);
       let is_muted = muted_ids.contains(&t.id);
+
+      let new_count: i32 = topic_articles::table
+        .filter(topic_articles::topic_id.eq(t.id))
+        .inner_join(articles::table.on(articles::id.eq(topic_articles::article_id)))
+        .filter(articles::create_date.gt(now - chrono::Duration::hours(24)))
+        .count()
+        .first::<i64>(conn)
+        .unwrap_or(0) as i32;
+
+      let confidence = crate::ai::ranking::compute_topic_relevance_simple(
+        t.article_count,
+        t.source_count,
+        &t.last_updated_at.to_string(),
+        &now,
+        is_following,
+      );
+
       TopicItem {
         id: t.id,
         uuid: t.uuid,
@@ -388,12 +408,13 @@ pub fn get_topics_list(
         last_updated_at: t.last_updated_at.to_string(),
         is_following,
         is_muted,
+        new_count,
+        confidence,
       }
     })
     .collect();
 
   if sort_field == "relevance" {
-    let now = chrono::Utc::now().naive_utc();
     items.sort_by(|a, b| {
       let score_a = crate::ai::ranking::compute_topic_relevance_simple(
         a.article_count,
