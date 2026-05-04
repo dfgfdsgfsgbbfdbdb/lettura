@@ -74,7 +74,7 @@ export const ItemView: FC<CardProps> = ({
             store.feedContextMenuStatus &&
             store.feedContextMenuTarget &&
             store.feedContextMenuTarget.uuid === feed.uuid,
-          "ml-2 w-[calc(100%-0.5rem)]": level === 2,
+
         })}
         onContextMenu={() => {
           console.log("content menu");
@@ -126,7 +126,7 @@ export const ItemView: FC<CardProps> = ({
         {unread > 0 && (
           <span
             className={clsx(
-              "ml-auto h-4 min-w-[1rem] text-center text-[10px] leading-4 text-[var(--gray-9)] tabular-nums",
+              "ml-auto text-[10px] text-[var(--gray-9)] tabular-nums",
             )}
           >
             {unread}
