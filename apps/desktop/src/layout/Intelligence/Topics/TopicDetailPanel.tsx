@@ -14,7 +14,6 @@ import {
   BookmarkPlus,
   ExternalLink,
   Calendar,
-  RefreshCw,
 } from "lucide-react";
 import { cn } from "@/helpers/cn";
 import { RouteConfig } from "@/config";
@@ -35,7 +34,6 @@ interface TopicDetailPanelProps {
   loading: boolean;
   followTopic: (id: number) => void;
   unfollowTopic: (id: number) => void;
-  onReanalyze: () => void;
 }
 
 export function TopicDetailPanel({
@@ -43,7 +41,6 @@ export function TopicDetailPanel({
   loading,
   followTopic,
   unfollowTopic,
-  onReanalyze,
 }: TopicDetailPanelProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -78,7 +75,7 @@ export function TopicDetailPanel({
     topic.source_groups && topic.source_groups.length > 0;
 
   return (
-    <aside className="flex flex-col h-full border-l border-[var(--gray-4)] bg-[var(--color-background)]">
+    <aside className="flex flex-col h-full min-h-0 border-l border-[var(--gray-4)] bg-[var(--color-background)]">
       <div className="px-5 pt-5 pb-3 border-b border-[var(--gray-4)] shrink-0">
         <div className="flex items-center gap-2 mb-2">
           <span
@@ -127,13 +124,6 @@ export function TopicDetailPanel({
                   ? t("layout.topics.following")
                   : t("layout.topics.follow")}
               </span>
-            </button>
-            <button
-              onClick={onReanalyze}
-              className="flex items-center gap-1 px-2 py-1 text-[11px] text-[var(--gray-11)] hover:text-[var(--gray-12)] border border-[var(--gray-4)] rounded-md hover:border-[var(--gray-6)] transition-colors"
-            >
-              <RefreshCw size={11} />
-              {t("layout.topics.reanalyze")}
             </button>
           </div>
         </div>

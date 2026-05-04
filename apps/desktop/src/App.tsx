@@ -21,6 +21,9 @@ function App() {
       updateAboutDialogStatus: state.updateAboutDialogStatus,
       updateAppMetadata: state.updateAppMetadata,
       setOnboardingOpen: state.setOnboardingOpen,
+      setPipelineStatus: state.setPipelineStatus,
+      setPipelineProgress: state.setPipelineProgress,
+      setPipelineError: state.setPipelineError,
     })),
   );
 
@@ -65,6 +68,51 @@ function App() {
     store.updateAppMetadata,
     navigate,
   ]);
+
+  useEffect(() => {
+    if (!(window as any).__TAURI_INTERNALS__) return;
+
+    const unsubs: (() => void)[] = [];
+    let cancelled = false;
+
+    import("@tauri-apps/api/event").then(async ({ listen }) => {
+      if (cancelled) return;
+
+      unsubs.push(
+        await listen("pipeline:started", () => {
+          store.setPipelineStatus("running");
+        }),
+      );
+      unsubs.push(
+        await listen("pipeline:progress", (e: any) => {
+          const { stage, current, total } = e.payload;
+          store.setPipelineProgress(stage, current, total);
+        }),
+      );
+      unsubs.push(
+        await listen("pipeline:completed", () => {
+          store.setPipelineStatus("done");
+        }),
+      );
+      unsubs.push(
+        await listen("pipeline:failed", (e: any) => {
+          const msg = e.payload?.error_message || "Unknown error";
+          store.setPipelineError(msg);
+        }),
+      );
+
+      const { invoke } = await import("@tauri-apps/api/core");
+      const running = await invoke<boolean>("is_pipeline_running");
+      if (!cancelled && running) {
+        store.setPipelineStatus("running");
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      unsubs.forEach((unsub) => unsub());
+    };
+  }, [store.setPipelineStatus, store.setPipelineProgress, store.setPipelineError]);
 
   useEffect(() => {
     const minBtn = document.getElementById("titlebar-minimize");

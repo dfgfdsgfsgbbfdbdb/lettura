@@ -83,6 +83,7 @@ export function TopicWorkspace() {
       className="grid h-full"
       style={{
         gridTemplateColumns: "236px minmax(360px, 1fr) 420px",
+        gridTemplateRows: "1fr",
       }}
     >
       {/* Left: Topic Sidebar */}
@@ -127,10 +128,9 @@ export function TopicWorkspace() {
           loading={store.detailLoading}
           followTopic={store.followTopic}
           unfollowTopic={store.unfollowTopic}
-          onReanalyze={() => store.triggerPipeline()}
         />
       ) : (
-        <aside className="flex flex-col items-center justify-center border-l border-[var(--gray-4)] bg-[var(--color-background)]">
+        <aside className="flex flex-col items-center justify-center border-l border-[var(--gray-4)] bg-[var(--color-background)] overflow-hidden">
           <Layers size={48} className="mb-4 text-[var(--gray-8)]" />
           <Text size="2" className="text-[var(--gray-9)]">
             {t("layout.topics.detail.select_prompt")}

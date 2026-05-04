@@ -4,16 +4,18 @@ import { PipelineStatus } from "@/stores/createTodaySlice";
 import { Loader2, Check, AlertTriangle, RefreshCw } from "lucide-react";
 
 const STAGE_LABEL_MAP: Record<string, string> = {
-  fetching: "today.pipeline.stage_syncing",
-  embedding: "today.pipeline.stage_analyzing",
-  deduplication: "today.pipeline.stage_analyzing",
+  fetching_articles: "today.pipeline.stage_syncing",
+  generating_embeddings: "today.pipeline.stage_analyzing",
+  deduplicating: "today.pipeline.stage_analyzing",
   clustering: "today.pipeline.stage_analyzing",
-  signal_title: "today.pipeline.stage_generating",
-  topic: "today.pipeline.stage_topic",
-  topic_summary: "today.pipeline.stage_summary",
-  article_summary: "today.pipeline.stage_analyzing",
+  generating_signal_titles: "today.pipeline.stage_generating",
+  creating_topics: "today.pipeline.stage_topic",
+  generating_topic_summaries: "today.pipeline.stage_summary",
+  generating_summaries: "today.pipeline.stage_analyzing",
+  grouping_topics: "today.pipeline.stage_topic",
   ranking: "today.pipeline.stage_ranking",
-  wim: "today.pipeline.stage_explaining",
+  generating_wim: "today.pipeline.stage_explaining",
+  storing_results: "today.pipeline.stage_analyzing",
 };
 
 interface PipelineIndicatorProps {
@@ -42,16 +44,14 @@ export function PipelineIndicator({
   if (status === "idle") {
     if (!onTrigger) return null;
     return (
-      <Flex align="center" gap="2" className={compact ? "py-1 px-3" : "px-4 py-2"}>
-        <Button
-          size="1"
-          variant="ghost"
-          className="text-[var(--gray-9)] hover:text-[var(--gray-12)]"
+      <Flex align="center" gap="2" className={compact ? "py-1" : "px-4 py-2"}>
+        <button
           onClick={() => onTrigger()}
+          className="flex items-center gap-1 px-2 py-1 text-[11px] text-[var(--gray-11)] hover:text-[var(--gray-12)] border border-[var(--gray-4)] rounded-md hover:border-[var(--gray-6)] transition-colors"
         >
-          <RefreshCw size={13} />
+          <RefreshCw size={12} />
           {t("today.pipeline.refresh")}
-        </Button>
+        </button>
         {lastUpdated && (
           <Text size="1" className="text-[var(--gray-8)]">
             {t("today.pipeline.last_updated", { time: new Date(lastUpdated).toLocaleTimeString() })}

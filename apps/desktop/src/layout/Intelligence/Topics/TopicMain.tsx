@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Text } from "@radix-ui/themes";
-import { Layers, RefreshCw } from "lucide-react";
+import { Layers } from "lucide-react";
 import { cn } from "@/helpers/cn";
 import { RouteConfig } from "@/config";
 import { TopicCard } from "./TopicCard";
@@ -169,32 +169,23 @@ export function TopicMain({
   const filterModes = ["all", "following", "updated", "muted"] as const;
 
   return (
-    <div className="h-full overflow-auto bg-[var(--color-background)]">
+    <div className="h-full min-h-0 overflow-auto bg-[var(--color-background)]">
       {/* Header */}
       <div className="px-5 pb-3 pt-5">
         <div className="flex items-center justify-between mb-1">
           <h1 className="text-lg font-semibold text-[var(--gray-12)]">
             {t("layout.topics.title")}
           </h1>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => triggerPipeline()}
-              className="flex items-center gap-1 px-2 py-1 text-[11px] text-[var(--gray-11)] hover:text-[var(--gray-12)] border border-[var(--gray-4)] rounded-md hover:border-[var(--gray-6)] transition-colors"
-            >
-              <RefreshCw size={12} />
-              {t("layout.topics.reanalyze")}
-            </button>
-            <PipelineIndicator
-              status={pipelineStatus}
-              stage={pipelineStage}
-              progress={pipelineProgress ?? undefined}
-              error={pipelineError}
-              onTrigger={triggerPipeline}
-              onRetry={triggerPipeline}
-              lastUpdated={lastUpdated}
-              compact
-            />
-          </div>
+          <PipelineIndicator
+            status={pipelineStatus}
+            stage={pipelineStage}
+            progress={pipelineProgress ?? undefined}
+            error={pipelineError}
+            onTrigger={triggerPipeline}
+            onRetry={triggerPipeline}
+            lastUpdated={lastUpdated}
+            compact
+          />
         </div>
         <p className="text-xs text-[var(--gray-9)]">
           {t("layout.topics.subtitle")}

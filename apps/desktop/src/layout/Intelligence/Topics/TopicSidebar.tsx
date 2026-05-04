@@ -50,7 +50,7 @@ export function TopicSidebar({
   const trackedForPick = tracked.slice(0, 5);
 
   return (
-    <aside className="flex flex-col h-full border-r border-[var(--gray-4)] bg-[var(--gray-2)]">
+    <aside className="flex flex-col h-full min-h-0 border-r border-[var(--gray-4)] bg-[var(--gray-2)]">
       <div className="px-4 pt-5 pb-3">
         <Text size="4" weight="bold" className="text-[var(--gray-12)] block">
           {t("layout.topics.title")}
