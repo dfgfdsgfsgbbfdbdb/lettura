@@ -177,6 +177,55 @@
       flex: 1;
       overflow-y: auto;
     }
+    .feed-workspace-header {
+      flex-shrink: 0;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+    .feed-workspace-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: space-between;
+    }
+    .feed-workspace-title {
+      min-width: 0;
+    }
+    .feed-workspace-title h2 {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .feed-workspace-title p {
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .feed-workspace-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .feed-filter-bar {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .reader-drawer {
+      width: min(960px, 70vw);
+      background: var(--bg-card);
+      border-left: 1px solid var(--border);
+      box-shadow: -8px 0 24px rgba(0,0,0,0.06);
+      flex-shrink: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .reader-drawer .main-scroll {
+      background: var(--bg-card);
+    }
 
     /* Right panel */
     .right-panel {
@@ -1667,14 +1716,48 @@
     </div>
   </div>
 
-  <!-- Main: Article list -->
+  <!-- Main: fixed operations + scrollable article list -->
   <div class="main-content">
-    <div style="padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
-      <span style="font-size:14px; font-weight:600;">Hacker News</span>
-      <span style="font-size:11px; color:var(--text-tertiary);">24 篇未读</span>
+    <div class="feed-workspace-header">
+      <div class="feed-workspace-row">
+        <div class="feed-workspace-title">
+          <h2>Hacker News</h2>
+          <p>24 篇未读 · 最近同步 10 分钟前</p>
+        </div>
+        <div class="feed-workspace-actions">
+          <button class="btn btn-primary">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            新增订阅
+          </button>
+          <button class="btn btn-ghost" title="添加文件夹">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 10v6M9 13h6"/><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 4A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+          </button>
+          <button class="btn btn-ghost" title="导入 OPML">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/></svg>
+          </button>
+          <button class="btn btn-ghost" title="导出 OPML">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21V9"/><path d="m7 16 5 5 5-5"/><path d="M5 3h14"/></svg>
+          </button>
+          <button class="btn btn-ghost">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M16 8h5V3"/></svg>
+            同步全部
+          </button>
+          <button class="btn btn-ghost">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 12 2 2 4-4"/><path d="m13 12 2 2 4-4"/><path d="M3 19h18"/></svg>
+            全部已读
+          </button>
+        </div>
+      </div>
+      <div class="feed-filter-bar">
+        <div style="display:flex; gap:4px; padding:2px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg-sidebar);">
+          <button class="btn btn-ghost active" style="border:0; padding:4px 10px;">全部</button>
+          <button class="btn btn-ghost" style="border:0; padding:4px 10px;">未读</button>
+          <button class="btn btn-ghost" style="border:0; padding:4px 10px;">已读</button>
+        </div>
+      </div>
     </div>
     <div class="main-scroll">
-      <div class="article-item unread">
+      <div class="article-item unread" onclick="showPage('article')" title="点击查看 Article (Feeds)">
         <div style="flex:1;">
           <div style="font-size:13px; font-weight:500; color:var(--text-primary); margin-bottom:4px;">OpenAI releases open-source Agent SDK for building multi-agent systems</div>
           <div class="article-meta">techcrunch.com · 2 小时前 · 128 comments</div>
@@ -1718,6 +1801,7 @@
       </div>
     </div>
   </div>
+
 </div>
 
 <!-- ==================== PAGE: SEARCH ==================== -->
@@ -2054,43 +2138,118 @@
     <button class="rail-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span class="tooltip">Settings</span></button>
   </div>
 
-  <!-- Article sidebar: list -->
-  <div class="sidebar" style="width:280px;">
-    <div style="padding:12px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
-      <span style="font-size:12px; font-weight:600;">Hacker News</span>
-      <span style="font-size:10px; color:var(--text-tertiary);">24 篇</span>
+  <!-- Feeds sidebar stays visible while reading -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">Feeds</div>
+      <div class="sidebar-desc">管理你的订阅源</div>
     </div>
-    <div style="flex:1; overflow-y:auto;">
+    <div class="sidebar-content">
+      <div class="sidebar-section-title">技术</div>
+      <div class="sidebar-item active">
+        <div class="feed-icon" style="width:18px; height:18px; border-radius:3px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </div>
+        Hacker News
+        <span class="count">23</span>
+      </div>
+      <div class="sidebar-item">
+        <div class="feed-icon" style="width:18px; height:18px; border-radius:3px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </div>
+        TechCrunch
+        <span class="count">8</span>
+      </div>
+      <div class="sidebar-item">
+        <div class="feed-icon" style="width:18px; height:18px; border-radius:3px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </div>
+        The Verge
+        <span class="count">6</span>
+      </div>
+      <div class="sidebar-section-title">博客</div>
+      <div class="sidebar-item">
+        <div class="feed-icon" style="width:18px; height:18px; border-radius:3px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </div>
+        Simon Willison
+        <span class="count">5</span>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      共 7 个活跃源 · 上次同步 10 分钟前
+    </div>
+  </div>
+
+  <!-- Main keeps the feed article list context -->
+  <div class="main-content">
+    <div class="feed-workspace-header">
+      <div class="feed-workspace-row">
+        <div class="feed-workspace-title">
+          <h2>Hacker News</h2>
+          <p>23 篇未读 · 正在阅读 1 篇</p>
+        </div>
+        <div class="feed-workspace-actions">
+          <button class="btn btn-primary">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            新增订阅
+          </button>
+          <button class="btn btn-ghost" title="添加文件夹">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 10v6M9 13h6"/><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 4A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+          </button>
+          <button class="btn btn-ghost" title="导入 OPML">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/></svg>
+          </button>
+          <button class="btn btn-ghost">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M16 8h5V3"/></svg>
+            同步全部
+          </button>
+        </div>
+      </div>
+      <div class="feed-filter-bar">
+        <div style="display:flex; gap:4px; padding:2px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg-sidebar);">
+          <button class="btn btn-ghost active" style="border:0; padding:4px 10px;">全部</button>
+          <button class="btn btn-ghost" style="border:0; padding:4px 10px;">未读</button>
+          <button class="btn btn-ghost" style="border:0; padding:4px 10px;">已读</button>
+        </div>
+      </div>
+    </div>
+    <div class="main-scroll">
       <div class="article-item" style="background:var(--accent-light); border-left:2px solid var(--accent);">
         <div style="flex:1;">
-          <div style="font-size:12px; font-weight:600; color:var(--accent-text); margin-bottom:2px;">OpenAI releases open-source Agent SDK</div>
-          <div class="article-meta">2 小时前</div>
+          <div style="font-size:13px; font-weight:600; color:var(--accent-text); margin-bottom:4px;">OpenAI releases open-source Agent SDK for building multi-agent systems</div>
+          <div class="article-meta">techcrunch.com · 2 小时前 · 128 comments</div>
+        </div>
+      </div>
+      <div class="article-item unread">
+        <div style="flex:1;">
+          <div style="font-size:13px; font-weight:500; color:var(--text-primary); margin-bottom:4px;">Show HN: I built a local LLM inference benchmark comparing llama.cpp, vLLM and TGI</div>
+          <div class="article-meta">self · 4 小时前 · 89 comments</div>
+        </div>
+      </div>
+      <div class="article-item unread">
+        <div style="flex:1;">
+          <div style="font-size:13px; font-weight:500; color:var(--text-primary); margin-bottom:4px;">Rust 1.85: async fn in traits is now stable</div>
+          <div class="article-meta">blog.rust-lang.org · 6 小时前 · 67 comments</div>
         </div>
       </div>
       <div class="article-item">
         <div style="flex:1;">
-          <div style="font-size:12px; font-weight:500; color:var(--text-primary); margin-bottom:2px;">Local LLM inference benchmark</div>
-          <div class="article-meta">4 小时前</div>
-        </div>
-      </div>
-      <div class="article-item">
-        <div style="flex:1;">
-          <div style="font-size:12px; font-weight:500; color:var(--text-primary); margin-bottom:2px;">Rust 1.85: async fn in traits stable</div>
-          <div class="article-meta">6 小时前</div>
+          <div style="font-size:13px; font-weight:500; color:var(--text-primary); margin-bottom:4px;">The state of WebAssembly in 2025</div>
+          <div class="article-meta">bytecodealliance.org · 1 天前 · 45 comments</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Article reading area -->
-  <div class="main-content">
+  <!-- Article (Feeds): right reader drawer appears after clicking an article -->
+  <aside class="reader-drawer">
     <div class="main-scroll">
       <div class="reading-content">
-        <!-- Toolbar -->
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border);">
-          <button class="btn btn-ghost" style="font-size:11px;">
+          <button class="btn btn-ghost" style="font-size:11px;" onclick="showPage('feeds')">
             <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
-            返回
+            关闭
           </button>
           <div style="flex:1;"></div>
           <button class="btn btn-ghost" style="font-size:11px;">
@@ -2134,7 +2293,7 @@
         </p>
       </div>
     </div>
-  </div>
+  </aside>
 </div>
 
 <script>
