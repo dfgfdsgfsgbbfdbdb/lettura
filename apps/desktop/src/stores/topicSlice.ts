@@ -25,6 +25,8 @@ export interface TopicItem {
   last_updated_at: string;
   is_following: boolean;
   is_muted: boolean;
+  new_count: number;
+  confidence: number;
 }
 
 export interface SourceGroup {
@@ -74,6 +76,7 @@ export interface TopicSlice {
   fetchTopics: (status?: string, sort?: string) => Promise<void>;
   fetchTopicDetail: (topicId: number | string) => Promise<void>;
   clearSelectedTopic: () => void;
+  selectTopic: (uuidOrId: string | number) => void;
   setSortMode: (mode: "relevance" | "recent" | "article_count") => void;
   setFilterMode: (mode: "all" | "following" | "muted") => void;
   followTopic: (topicId: number) => Promise<void>;
@@ -124,6 +127,17 @@ export const createTopicSlice: StateCreator<TopicSlice> = (set, get) => ({
 
   clearSelectedTopic: () => {
     set({ selectedTopic: null });
+  },
+
+  selectTopic: (uuidOrId: string | number) => {
+    const topic = get().topics.find(t =>
+      t.uuid === uuidOrId || t.id === Number(uuidOrId)
+    );
+    if (topic) {
+      get().fetchTopicDetail(topic.id);
+    } else {
+      get().fetchTopicDetail(uuidOrId);
+    }
   },
 
   setSortMode: (mode) => {

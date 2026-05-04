@@ -446,19 +446,36 @@
       "mute": "静音",
       "unmute": "取消静音",
       "muted": "已静音",
+      "hero_note": "Topics 是你长期关注的变化脉络，来自 Today 中反复出现的高信号判断。这里负责 Follow、Mute、证据回看、源覆盖和后续阅读。",
+      "reanalyze": "重新分析",
+      "discovered": "新发现",
       "follow_toast": "已关注话题",
       "unfollow_toast": "已取消关注",
+      "new_changes": "个新变化",
       "filter": {
         "all": "全部",
         "following": "已关注",
         "tracked": "已追踪",
         "discovered": "已发现",
+        "updated": "有变化",
         "muted": "已静音"
       },
       "sort": {
         "relevance": "相关性",
         "recent": "最近更新",
         "article_count": "文章数量"
+      },
+      "sidebar": {
+        "filter_all": "全部主题",
+        "filter_tracked": "追踪中",
+        "filter_discovered": "新发现",
+        "filter_updated": "今天有变化",
+        "filter_muted": "已静音",
+        "status": "状态",
+        "tracked_topics": "重点主题",
+        "desc": "从 Today 的高信号判断沉淀出的长期关注脉络",
+        "last_analysis": "上次分析 {{time}}",
+        "covering": "覆盖 {{count}} 篇文章"
       },
       "detail": {
         "articles": "篇文章",
@@ -481,7 +498,9 @@
         "start_here": "推荐阅读",
         "start_here_desc": "系统推荐最值得先读的 1-3 篇原文",
         "read_original": "阅读原文",
-        "recommended": "推荐"
+        "recommended": "推荐",
+        "select_prompt": "选择一个主题查看详情",
+        "view_evidence": "查看证据"
       },
       "empty": {
         "sample_1_name": "AI Agent 竞争格局",

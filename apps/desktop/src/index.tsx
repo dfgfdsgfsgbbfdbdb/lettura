@@ -16,8 +16,7 @@ import { TodayPage } from "./layout/Intelligence/TodayPage";
 import { SearchPage } from "./layout/Search";
 import { StarredPage } from "./layout/Starred";
 import { FreshRSSPage } from "./layout/FreshRSS";
-import { TopicListPage } from "./layout/Intelligence/Topics/TopicListPage";
-import { TopicDetailPage } from "./layout/Intelligence/Topics/TopicDetailPage";
+import { TopicWorkspace } from "./layout/Intelligence/Topics/TopicWorkspace";
 import { SettingPage } from "./layout/Setting";
 
 import "./index.css";
@@ -64,11 +63,11 @@ const router = createBrowserRouter([
       },
       {
         path: RouteConfig.LOCAL_TOPICS,
-        element: <TopicListPage />,
+        element: <TopicWorkspace />,
       },
       {
         path: RouteConfig.LOCAL_TOPIC_DETAIL,
-        element: <TopicDetailPage />,
+        element: <TopicWorkspace />,
       },
       //   ],
       // },

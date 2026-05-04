@@ -1,6 +1,6 @@
 import { Text, Flex } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
-import { FileText, Rss, VolumeX, Volume1 } from "lucide-react";
+import { FileText, Rss, VolumeX, Volume1, TrendingUp } from "lucide-react";
 import type { TopicItem } from "@/stores/topicSlice";
 import { cn } from "@/helpers/cn";
 import { formatRelativeTime } from "@/helpers/formatRelativeTime";
@@ -10,24 +10,33 @@ interface TopicCardProps {
   onClick: (uuid: string) => void;
   onMute?: (topicId: number) => void;
   onUnmute?: (topicId: number) => void;
+  selected?: boolean;
 }
 
-export function TopicCard({ topic, onClick, onMute, onUnmute }: TopicCardProps) {
+export function TopicCard({ topic, onClick, onMute, onUnmute, selected }: TopicCardProps) {
   const { t } = useTranslation();
 
   return (
     <div
       className={cn(
-        "group rounded-lg border border-[var(--gray-5)] bg-[var(--color-panel-solid)] px-4 py-3 transition-colors hover:border-[var(--gray-7)] hover:bg-[var(--gray-a2)] cursor-pointer",
+        "group rounded-lg border bg-[var(--color-panel-solid)] px-4 py-3 transition-colors hover:border-[var(--gray-7)] hover:bg-[var(--gray-a2)] cursor-pointer",
+        selected
+          ? "border-[var(--accent-8)] bg-[var(--accent-a2)]"
+          : "border-[var(--gray-5)]",
         topic.is_muted && "opacity-60",
       )}
       onClick={() => onClick(topic.uuid)}
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          {topic.is_following && (
+          {topic.is_following && !topic.is_muted && (
             <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[var(--accent-a3)] text-[var(--accent-11)]">
               {t("layout.topics.following")}
+            </span>
+          )}
+          {!topic.is_following && !topic.is_muted && (
+            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[var(--amber-a3)] text-[var(--amber-11)]">
+              {t("layout.topics.discovered")}
             </span>
           )}
           {topic.is_muted && (
@@ -88,6 +97,14 @@ export function TopicCard({ topic, onClick, onMute, onUnmute }: TopicCardProps) 
             {topic.source_count} {t("layout.topics.detail.sources")}
           </Text>
         </Flex>
+        {topic.new_count > 0 && (
+          <Flex align="center" gap="1">
+            <TrendingUp size={13} className="text-[var(--green-9)]" />
+            <Text size="1" className="text-[var(--green-9)]">
+              {topic.new_count} {t("layout.topics.new_changes")}
+            </Text>
+          </Flex>
+        )}
       </Flex>
     </div>
   );

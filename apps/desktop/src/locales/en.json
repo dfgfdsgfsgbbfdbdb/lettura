@@ -424,19 +424,36 @@
       "mute": "Mute",
       "unmute": "Unmute",
       "muted": "Muted",
+      "hero_note": "Topics are your long-term focus threads, surfaced from recurring high-signal judgments in Today. Follow, Mute, review evidence, and explore source coverage here.",
+      "reanalyze": "Reanalyze",
+      "discovered": "Discovered",
       "follow_toast": "Topic followed",
       "unfollow_toast": "Topic unfollowed",
+      "new_changes": "new changes",
       "filter": {
         "all": "All",
         "following": "Following",
         "tracked": "Tracked",
         "discovered": "Discovered",
+        "updated": "Updated",
         "muted": "Muted"
       },
       "sort": {
         "relevance": "Relevance",
         "recent": "Recent",
         "article_count": "Article Count"
+      },
+      "sidebar": {
+        "filter_all": "All Topics",
+        "filter_tracked": "Tracked",
+        "filter_discovered": "Discovered",
+        "filter_updated": "Updated Today",
+        "filter_muted": "Muted",
+        "status": "Status",
+        "tracked_topics": "Tracked Topics",
+        "desc": "Long-term focus threads surfaced from high-signal Today judgments",
+        "last_analysis": "Last analysis {{time}}",
+        "covering": "{{count}} articles covered"
       },
       "detail": {
         "articles": "articles",
@@ -459,7 +476,9 @@
         "start_here": "Start Here",
         "start_here_desc": "System recommends the best 1-3 articles to read first",
         "read_original": "Read Original",
-        "recommended": "Recommended"
+        "recommended": "Recommended",
+        "select_prompt": "Select a topic to view details",
+        "view_evidence": "View Evidence"
       },
       "empty": {
         "sample_1_name": "AI Agent Competition",
