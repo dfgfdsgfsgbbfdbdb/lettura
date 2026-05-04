@@ -98,7 +98,7 @@ pub fn spawn_pipeline_if_configured(app_handle: Option<tauri::AppHandle>) {
     let embedding = OpenAIEmbedding::new(
       &ai_config.api_key,
       &ai_config.base_url,
-      ai_config.embedding_model.clone(),
+      ai_config.resolved_embedding_model(),
     );
     let llm = OpenAILLM::new(
       &ai_config.api_key,
@@ -161,7 +161,7 @@ pub fn start_pipeline_timer(app_handle: tauri::AppHandle) {
       let embedding = OpenAIEmbedding::new(
         &ai_config.api_key,
         &ai_config.base_url,
-        ai_config.embedding_model.clone(),
+        ai_config.resolved_embedding_model(),
       );
       let llm = OpenAILLM::new(
         &ai_config.api_key,
@@ -1285,6 +1285,7 @@ mod tests {
         sources: vec![],
         topic_id: None,
         topic_title: None,
+        topic_uuid: None,
         created_at: "2024-01-01".to_string(),
       },
       all_sources: vec![

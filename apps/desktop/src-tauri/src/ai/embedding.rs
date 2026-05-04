@@ -50,6 +50,13 @@ impl EmbeddingProvider for OpenAIEmbedding {
       "text-embedding-3-small" => 1536,
       "text-embedding-3-large" => 3072,
       "text-embedding-ada-002" => 1536,
+      "embedding-3" => 2048,
+      "embedding-2" => 1024,
+      "deepseek-embedding" => 1536,
+      "text-embedding-v4" | "text-embedding-v3" => 1024,
+      "text-embedding-v2" | "text-embedding-v1" => 1536,
+      "embedding-v1" | "bge-large-zh" | "bge-large-en" => 1024,
+      "BAAI/bge-m3" | "BAAI/bge-large-zh-v1.5" | "BAAI/bge-large-en-v1.5" => 1024,
       _ => 1536,
     }
   }

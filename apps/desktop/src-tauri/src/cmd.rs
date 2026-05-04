@@ -455,7 +455,7 @@ pub async fn validate_ai_config() -> Result<ValidateAiConfigResult, String> {
   let embedding = crate::ai::embedding::OpenAIEmbedding::new(
     &ai_config.api_key,
     &ai_config.base_url,
-    ai_config.embedding_model.clone(),
+    ai_config.resolved_embedding_model(),
   );
 
   match embedding.embed(vec!["test"]).await {
@@ -485,7 +485,7 @@ pub async fn trigger_pipeline(
   let embedding = crate::ai::embedding::OpenAIEmbedding::new(
     &ai_config.api_key,
     &ai_config.base_url,
-    ai_config.embedding_model.clone(),
+    ai_config.resolved_embedding_model(),
   );
   let llm = crate::ai::llm::OpenAILLM::new(
     &ai_config.api_key,
