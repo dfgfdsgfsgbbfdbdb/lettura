@@ -4,63 +4,24 @@ import * as dataAgent from "@/helpers/dataAgent";
 import type { ArticleResItem } from "@/db";
 import { toast } from "sonner";
 import i18next from "i18next";
+import type {
+  SignalSource,
+  Signal,
+  SignalDetail,
+  AIConfigPublic,
+  TodayOverview,
+  PipelineStatus,
+  FeedbackEntry,
+} from "@/typing";
 
-export interface SignalSource {
-  article_id: number;
-  article_uuid: string;
-  title: string;
-  link: string;
-  feed_title: string;
-  feed_uuid: string;
-  pub_date: string;
-  excerpt: string | null;
-}
-
-export interface Signal {
-  id: number;
-  title: string;
-  summary: string;
-  why_it_matters: string;
-  relevance_score: number;
-  source_count: number;
-  sources: SignalSource[];
-  topic_id: number | null;
-  topic_title: string | null;
-  topic_uuid: string | null;
-  created_at: string;
-}
-
-export interface SignalDetail {
-  signal: Signal;
-  all_sources: SignalSource[];
-}
-
-export interface AIConfigPublic {
-  has_api_key: boolean;
-  model: string;
-  embedding_model: string;
-  base_url: string;
-  pipeline_interval_hours: number;
-  enable_embedding: boolean;
-  enable_auto_pipeline: boolean;
-}
-
-export interface TodayOverview {
-  summary: string;
-  signal_count: number;
-  article_count: number;
-  generated_at: string;
-  is_stale: boolean;
-}
-
-export type PipelineStatus = "idle" | "running" | "done" | "error";
-
-export interface FeedbackEntry {
-  id: number;
-  signal_id: number;
-  feedback_type: string;
-  comment: string | null;
-  create_date: string;
+export type {
+  SignalSource,
+  Signal,
+  SignalDetail,
+  AIConfigPublic,
+  TodayOverview,
+  PipelineStatus,
+  FeedbackEntry,
 }
 
 export interface TodaySlice {
@@ -117,6 +78,7 @@ export interface TodaySlice {
   fetchSignalDetail: (signalId: number) => Promise<void>;
   fetchOverview: () => Promise<void>;
   submitFeedback: (signalId: number, feedbackType: "useful" | "not_relevant" | "follow_topic", comment?: string) => Promise<void>;
+  clearFeedback: (signalId: number) => void;
   fetchFeedbackHistory: (limit?: number) => Promise<void>;
 }
 
@@ -248,6 +210,12 @@ export const createTodaySlice: StateCreator<TodaySlice> = (set, get) => ({
     }));
     toast.success(i18next.t("today.feedback.success"));
     get().fetchSignals();
+  },
+
+  clearFeedback: (signalId) => {
+    set((state) => ({
+      feedbackMap: { ...state.feedbackMap, [signalId]: null },
+    }));
   },
 
   fetchFeedbackHistory: async (limit) => {

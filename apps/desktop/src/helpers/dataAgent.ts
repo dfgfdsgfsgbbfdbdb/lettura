@@ -8,6 +8,13 @@ import {
 } from "../db";
 import { request } from "@/helpers/request";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
+import type {
+  SignalSource,
+  Signal,
+  AIConfigPublic,
+  ValidateAIConfigResult,
+  PipelineResult,
+} from "@/typing";
 
 export const getChannels = async (
   filter: any,
@@ -288,50 +295,6 @@ export const importOpmlAsSource = async (
 ): Promise<OpmlImportResult> => {
   return invoke("import_opml_as_source", { opmlContent });
 };
-
-export interface SignalSource {
-  article_id: number;
-  article_uuid: string;
-  title: string;
-  link: string;
-  feed_title: string;
-  feed_uuid: string;
-  pub_date: string;
-  excerpt: string | null;
-}
-
-export interface Signal {
-  id: number;
-  title: string;
-  summary: string;
-  why_it_matters: string;
-  relevance_score: number;
-  source_count: number;
-  sources: SignalSource[];
-  topic_id: number | null;
-  topic_title: string | null;
-  created_at: string;
-}
-
-export interface AIConfigPublic {
-  has_api_key: boolean;
-  model: string;
-  embedding_model: string;
-  base_url: string;
-  pipeline_interval_hours: number;
-  enable_embedding: boolean;
-  enable_auto_pipeline: boolean;
-}
-
-export interface ValidateAIConfigResult {
-  valid: boolean;
-  message: string;
-}
-
-export interface PipelineResult {
-  run_id: number;
-  started: boolean;
-}
 
 export const getTodaySignals = async (limit?: number): Promise<Signal[]> => {
   return invoke("get_today_signals", { limit });
