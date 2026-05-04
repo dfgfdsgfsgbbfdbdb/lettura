@@ -175,6 +175,9 @@ export function AIConfigPanel() {
             <Select.Root value={model} onValueChange={setModel}>
               <Select.Trigger className="settings-select" />
               <Select.Content>
+                {model !== "gpt-4o-mini" && model !== "gpt-4.1-mini" && model && (
+                  <Select.Item value={model}>{model}</Select.Item>
+                )}
                 <Select.Item value="gpt-4o-mini">gpt-4o-mini</Select.Item>
                 <Select.Item value="gpt-4.1-mini">gpt-4.1-mini</Select.Item>
               </Select.Content>
