@@ -24,14 +24,11 @@ impl OpenAIEmbedding {
       model,
     }
   }
-}
 
-#[async_trait]
-impl EmbeddingProvider for OpenAIEmbedding {
-  async fn embed(&self, texts: Vec<&str>) -> Result<Vec<Vec<f32>>, String> {
+  async fn embed_batch(&self, texts: &[&str]) -> Result<Vec<Vec<f32>>, String> {
     let request = CreateEmbeddingRequestArgs::default()
       .model(&self.model)
-      .input(texts)
+      .input(texts.to_vec())
       .build()
       .map_err(|e| format!("Embedding request build failed: {}", e))?;
 
@@ -43,6 +40,24 @@ impl EmbeddingProvider for OpenAIEmbedding {
       .map_err(|e| format!("Embedding API call failed: {}", e))?;
 
     Ok(response.data.into_iter().map(|e| e.embedding).collect())
+  }
+}
+
+const EMBED_BATCH_SIZE: usize = 64;
+
+#[async_trait]
+impl EmbeddingProvider for OpenAIEmbedding {
+  async fn embed(&self, texts: Vec<&str>) -> Result<Vec<Vec<f32>>, String> {
+    if texts.len() <= EMBED_BATCH_SIZE {
+      return self.embed_batch(&texts).await;
+    }
+
+    let mut all_embeddings = Vec::with_capacity(texts.len());
+    for chunk in texts.chunks(EMBED_BATCH_SIZE) {
+      let batch = self.embed_batch(chunk).await?;
+      all_embeddings.extend(batch);
+    }
+    Ok(all_embeddings)
   }
 
   fn dimension(&self) -> usize {
