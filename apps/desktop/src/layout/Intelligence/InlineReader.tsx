@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, ExternalLink, Star, Loader2, AlertCircle, Ro
 import DOMPurify from "dompurify";
 import type { SignalSource } from "@/stores/createTodaySlice";
 import type { ArticleResItem } from "@/db";
+import { useBearStore } from "@/stores";
 
 interface InlineReaderProps {
   source: SignalSource;
@@ -111,7 +112,16 @@ export function InlineReader({
               const newStatus = !localStarred ? 1 : 0;
               setLocalStarred(!localStarred);
               import("@/helpers/dataAgent").then(({ updateArticleStarStatus }) => {
-                updateArticleStarStatus(source.article_uuid, newStatus);
+                updateArticleStarStatus(source.article_uuid, newStatus).then(() => {
+                  const store = useBearStore.getState();
+                  const list = store.articleList;
+                  const idx = list.findIndex((a) => a.uuid === source.article_uuid);
+                  if (idx !== -1) {
+                    const updated = [...list];
+                    updated[idx] = { ...updated[idx], starred: newStatus };
+                    store.setArticleList(updated);
+                  }
+                });
               });
             }
           }}
