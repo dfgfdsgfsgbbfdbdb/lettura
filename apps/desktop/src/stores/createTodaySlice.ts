@@ -166,7 +166,11 @@ export const createTodaySlice: StateCreator<TodaySlice> = (set, get) => ({
     try {
       await invoke("trigger_pipeline", { runType: runType || "full" });
     } catch (e) {
-      set({ pipelineStatus: "error", pipelineError: String(e) });
+      const msg = String(e);
+      if (msg.includes("PL_ALREADY_RUNNING")) {
+        return;
+      }
+      set({ pipelineStatus: "error", pipelineError: msg });
     }
   },
 

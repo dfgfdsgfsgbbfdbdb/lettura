@@ -153,6 +153,7 @@ pub fn run() {
       cmd::save_ai_config,
       cmd::validate_ai_config,
       cmd::trigger_pipeline,
+      cmd::is_pipeline_running,
       cmd::submit_feedback,
       cmd::get_feedback_history,
       cmd::get_topics,

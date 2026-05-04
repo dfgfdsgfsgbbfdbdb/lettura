@@ -500,6 +500,11 @@ pub async fn trigger_pipeline(
 }
 
 #[command]
+pub fn is_pipeline_running() -> bool {
+    crate::ai::pipeline::is_pipeline_running()
+}
+
+#[command]
 pub fn submit_feedback(
   signal_id: i32,
   feedback_type: String,

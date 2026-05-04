@@ -110,6 +110,12 @@ export function TodayPage() {
           store.setPipelineError(msg);
         }),
       );
+
+      const { invoke } = await import("@tauri-apps/api/core");
+      const running = await invoke<boolean>("is_pipeline_running");
+      if (!cancelled && running) {
+        store.setPipelineStatus("running");
+      }
     });
 
     return () => {
