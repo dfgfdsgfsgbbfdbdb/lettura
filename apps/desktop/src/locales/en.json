@@ -223,6 +223,11 @@
         "low": "Low Signal"
       }
     },
+    "signal": {
+      "level_top": "Top Signal",
+      "level_watch": "Watch",
+      "level_signal": "Signal"
+    },
     "why_short": "Why",
     "why_expand": "Show why",
     "why_collapse": "Hide",
@@ -243,8 +248,14 @@
       "not_relevant": "Not Relevant",
       "follow_topic": "Follow Topic",
       "submitting": "Submitting...",
-      "success": "Thanks for your feedback!"
+      "success": "Thanks for your feedback!",
+      "undo": "Undo",
+      "history": "Feedback History",
+      "history_title": "Your Feedback",
+      "history_empty": "No feedback yet",
+      "history_signal": "Signal #{{id}}"
     },
+    "offline": "Offline",
     "deep_read": {
       "read_original": "Read Original",
       "continue_reading": "Continue Reading",
@@ -253,6 +264,8 @@
     "topic_badge": "Topic: {{title}}",
     "right_panel": {
       "evidence_title": "Source Evidence",
+      "show_more": "Show {{count}} more",
+      "show_less": "Show less",
       "daily_status": {
         "title": "Today's Status",
         "loading": "Loading status...",

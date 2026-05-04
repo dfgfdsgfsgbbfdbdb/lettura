@@ -245,6 +245,11 @@
         "low": "低信号"
       }
     },
+    "signal": {
+      "level_top": "高信号",
+      "level_watch": "关注",
+      "level_signal": "信号"
+    },
     "why_short": "为什么",
     "why_expand": "查看原因",
     "why_collapse": "收起",
@@ -265,8 +270,14 @@
       "not_relevant": "不相关",
       "follow_topic": "追踪话题",
       "submitting": "提交中...",
-      "success": "感谢你的反馈！"
+      "success": "感谢你的反馈！",
+      "undo": "撤销",
+      "history": "反馈历史",
+      "history_title": "你的反馈",
+      "history_empty": "暂无反馈",
+      "history_signal": "信号 #{{id}}"
     },
+    "offline": "离线",
     "deep_read": {
       "read_original": "阅读原文",
       "continue_reading": "继续阅读",
@@ -275,6 +286,8 @@
     "topic_badge": "话题：{{title}}",
     "right_panel": {
       "evidence_title": "来源证据",
+      "show_more": "展开剩余 {{count}} 条",
+      "show_less": "收起",
       "daily_status": {
         "title": "今日状态",
         "loading": "加载状态中...",
