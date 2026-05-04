@@ -316,12 +316,7 @@ async fn execute_pipeline_steps(
     return Ok(0);
   }
 
-  let use_embedding = ai_config.enable_embedding || {
-    let resolved = crate::ai::config::resolve_embedding_model(&ai_config.embedding_model, &ai_config.base_url);
-    resolved != ai_config.embedding_model
-  };
-
-  if use_embedding {
+  if ai_config.enable_embedding {
     execute_with_embedding(
       conn,
       ai_config,
@@ -709,6 +704,12 @@ async fn execute_without_embedding(
 
     wim_count += 1;
     emit_progress(app_handle, "generating_wim", wim_count, top_id_set.len());
+  }
+
+  // LLM-based topic grouping (no embedding cost)
+  emit_progress(app_handle, "grouping_topics", 0, 1);
+  if let Err(e) = group_articles_into_topics_llm(llm_provider, conn, unprocessed).await {
+    log::warn!("LLM topic grouping failed (non-fatal): {}", e);
   }
 
   emit_progress(app_handle, "storing_results", 0, 1);
@@ -1158,6 +1159,78 @@ pub fn search_signals(
   .map_err(|e| e.to_string())?;
 
   Ok(results)
+}
+
+async fn group_articles_into_topics_llm(
+  llm: &dyn LLMProvider,
+  conn: &mut SqliteConnection,
+  articles: &[UnprocessedArticle],
+) -> Result<(), String> {
+  if articles.len() < 2 {
+    return Ok(());
+  }
+
+  let mut lines: Vec<String> = Vec::with_capacity(articles.len());
+  for a in articles {
+    let desc_preview = a.description.chars().take(80).collect::<String>();
+    lines.push(format!("[{}] {} | {}", a.id, a.title, desc_preview));
+  }
+
+  let prompt = format!(
+    "你是一个新闻分析助手。以下是今天待处理的文章列表，每行格式为 [id] 标题 | 摘要。\n\
+     请将主题相关的文章分到同一组。只输出分组结果，每组一行，格式严格为：GROUP|话题标题|id1,id2,id3\n\
+     - 话题标题用中文，简明扼要（≤20字）\n\
+     - 每组至少2篇文章\n\
+     - 没有相关文章的不要编组\n\
+     - 只输出 GROUP 开头的行，不要输出其他内容\n\n\
+     文章列表：\n{}",
+    lines.join("\n")
+  );
+
+  let response = llm.complete(&prompt, "你是一个新闻分类助手，只输出分组结果，格式严格为 GROUP|标题|id列表").await?;
+
+  let mut created_count = 0u32;
+  for line in response.lines() {
+    let line = line.trim();
+    if !line.starts_with("GROUP|") {
+      continue;
+    }
+
+    let parts: Vec<&str> = line[6..].splitn(2, '|').collect();
+    if parts.len() != 2 {
+      log::warn!("LLM topic: malformed line: {}", line);
+      continue;
+    }
+
+    let title = parts[0].trim().to_string();
+    let id_str = parts[1].trim();
+
+    let ids: Vec<i32> = id_str
+      .split(',')
+      .filter_map(|s| s.trim().parse::<i32>().ok())
+      .collect();
+
+    if ids.len() < 2 {
+      continue;
+    }
+
+    let valid_ids: Vec<i32> = ids
+      .into_iter()
+      .filter(|id| articles.iter().any(|a| a.id == *id))
+      .collect();
+
+    if valid_ids.len() < 2 {
+      continue;
+    }
+
+    match crate::ai::topic::assign_or_create_topic(conn, &valid_ids, &title) {
+      Ok(_) => created_count += 1,
+      Err(e) => log::warn!("LLM topic: failed to create topic '{}': {}", title, e),
+    }
+  }
+
+  log::info!("LLM topic grouping: created {} topics", created_count);
+  Ok(())
 }
 
 #[cfg(test)]
