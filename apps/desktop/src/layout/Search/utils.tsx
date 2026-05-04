@@ -1,0 +1,125 @@
+import { formatDistanceToNow, parseISO } from "date-fns";
+import { useTranslation } from "react-i18next";
+import { Avatar } from "@radix-ui/themes";
+import { ArticleResItem } from "@/db";
+import { getFeedLogo } from "@/helpers/parseXML";
+
+export function loadFromStorage<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+export function saveToStorage<T>(key: string, value: T) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // storage full or unavailable – silently ignore
+  }
+}
+
+export function stripHtml(value = "") {
+  return value.replace(/(<([^>]+)>)/gi, "").replace(/\s+/g, " ").trim();
+}
+
+export function formatTime(date?: string) {
+  if (!date) return "";
+  try {
+    return formatDistanceToNow(parseISO(date), { addSuffix: true });
+  } catch {
+    return date;
+  }
+}
+
+export function SearchChip(props: {
+  children: React.ReactNode;
+  active?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={props.onClick}
+      className={
+        props.active
+          ? "inline-flex items-center gap-1 rounded-full border border-[var(--accent-8)] bg-[var(--accent-a3)] px-3 py-1.5 text-xs font-medium text-[var(--accent-11)]"
+          : "inline-flex items-center gap-1 rounded-full border border-[var(--gray-5)] bg-[var(--color-panel-solid)] px-3 py-1.5 text-xs font-medium text-[var(--gray-11)] hover:bg-[var(--gray-a3)]"
+      }
+    >
+      {props.children}
+    </button>
+  );
+}
+
+export function SearchResultCard(props: {
+  article: ArticleResItem;
+  query: string;
+  onOpen: (article: ArticleResItem) => void;
+}) {
+  const { t } = useTranslation();
+  const { article, query, onOpen } = props;
+  const description = stripHtml(article.description || article.content || "");
+  const match = query.trim();
+  const hasMatch = match && description.toLowerCase().includes(match.toLowerCase());
+  const before = hasMatch
+    ? description.slice(0, description.toLowerCase().indexOf(match.toLowerCase()))
+    : description;
+  const hit = hasMatch
+    ? description.slice(
+        description.toLowerCase().indexOf(match.toLowerCase()),
+        description.toLowerCase().indexOf(match.toLowerCase()) + match.length,
+      )
+    : "";
+  const after = hasMatch
+    ? description.slice(
+        description.toLowerCase().indexOf(match.toLowerCase()) + match.length,
+      )
+    : "";
+
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(article)}
+      className="group w-full rounded-lg border border-[var(--gray-5)] bg-[var(--color-panel-solid)] p-4 text-left transition hover:border-[var(--accent-7)] hover:bg-[var(--accent-a2)]"
+    >
+      <div className="mb-2 flex items-center gap-2">
+        <Avatar
+          size="1"
+          src={article.feed_logo || getFeedLogo(article.feed_url)}
+          fallback={article.feed_title?.slice(0, 1) || "L"}
+          className="rounded"
+        />
+        <span className="text-xs font-medium text-[var(--gray-11)]">
+          {article.feed_title || t("search.unknown_feed")}
+        </span>
+        {article.starred === 1 && (
+          <span className="rounded-full bg-[var(--amber-a3)] px-2 py-0.5 text-[10px] font-medium text-[var(--amber-11)]">
+            {t("search.filter.starred")}
+          </span>
+        )}
+        <span className="ml-auto text-xs text-[var(--gray-10)]">
+          {formatTime(article.create_date)}
+        </span>
+      </div>
+      <div className="line-clamp-2 text-sm font-semibold leading-6 text-[var(--gray-12)]">
+        {article.title}
+      </div>
+      <p className="mt-2 line-clamp-3 text-xs leading-5 text-[var(--gray-11)]">
+        {hasMatch ? (
+          <>
+            {before.slice(-120)}
+            <mark className="rounded bg-[var(--amber-a4)] px-1 text-[var(--amber-12)]">
+              {hit}
+            </mark>
+            {after.slice(0, 220)}
+          </>
+        ) : (
+          description || t("search.no_summary")
+        )}
+      </p>
+    </button>
+  );
+}
