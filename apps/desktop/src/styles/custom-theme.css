@@ -16,6 +16,9 @@
 :root,
 .light,
 .light-theme {
+  --app-canvas: #f8f9fb;
+  --app-sidebar: #f1f3f7;
+
   --default-1: #fcfcfc;
   --default-2: #f9f9f9;
   --default-3: #f0f0f0;

@@ -22,7 +22,7 @@ body {
 }
 
 body {
-  background-color: var(--gray-1);
+  background-color: var(--app-canvas);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

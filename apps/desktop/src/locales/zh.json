@@ -239,6 +239,8 @@
     "signal_card": {
       "articles": "篇文章",
       "sources": "个来源",
+      "confidence": "置信度",
+      "unverified": "未验证",
       "level": {
         "high": "高信号",
         "medium": "中信号",

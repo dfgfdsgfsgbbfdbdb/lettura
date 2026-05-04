@@ -10,7 +10,7 @@ export function RightPanel({ expanded, children }: RightPanelProps) {
     <div
       data-testid="right-panel"
       className={`h-full min-w-0 border-l border-[var(--gray-4)] overflow-hidden transition-all duration-300 ease-in-out shrink-0 flex flex-col ${
-        expanded ? "bg-[var(--color-background)]" : "bg-[var(--gray-1)]"
+        expanded ? "bg-[var(--app-canvas)]" : "bg-[var(--app-sidebar)]"
       }`}
       style={{ width: expanded ? "var(--right-panel-expanded-width)" : "var(--right-panel-collapsed-width)" }}
     >

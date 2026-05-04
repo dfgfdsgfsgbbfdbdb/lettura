@@ -217,6 +217,8 @@
     "signal_card": {
       "articles": "articles",
       "sources": "sources",
+      "confidence": "confidence",
+      "unverified": "Unverified",
       "level": {
         "high": "High Signal",
         "medium": "Medium Signal",

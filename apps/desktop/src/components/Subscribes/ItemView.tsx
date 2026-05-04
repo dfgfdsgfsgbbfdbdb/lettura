@@ -53,7 +53,7 @@ export const ItemView: FC<CardProps> = ({
     return (
       <>
         <div
-          className="mt-3 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.5px] text-[var(--gray-9)]"
+          className="mt-3 mb-2 text-[10px] font-semibold uppercase tracking-[0.5px] text-[var(--gray-9)]"
           onContextMenu={() => {
             store.setFeedContextMenuTarget(feed);
           }}

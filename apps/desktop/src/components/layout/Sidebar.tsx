@@ -133,7 +133,7 @@ export const Sidebar = React.memo(function ({
         {renderContextContent()}
       </div>
 
-      {(context === "today" || context === "topics" || trackedTopics.length > 0) && (
+      {(context === "today" || context === "topics") && trackedTopics.length > 0 && (
         <div className="border-t border-[var(--gray-5)] shrink-0">
           <div className="px-3 pt-2.5 pb-1">
             <span className="text-xs font-medium text-[var(--gray-11)]">
