@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { PipelineStatus, FeedbackEntry } from "@/stores/createTodaySlice";
 import { useBearStore } from "@/stores";
+import { useShallow } from "zustand/react/shallow";
 import { Loader2, Check, AlertTriangle, RefreshCw, MessageSquare, WifiOff } from "lucide-react";
 
 interface TodayHeaderProps {
@@ -118,12 +119,17 @@ export function TodayHeader({
 function FeedbackHistoryPopover() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const store = useBearStore();
+  const { feedbackHistory, fetchFeedbackHistory } = useBearStore(
+    useShallow((state) => ({
+      feedbackHistory: state.feedbackHistory,
+      fetchFeedbackHistory: state.fetchFeedbackHistory,
+    })),
+  );
 
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
-    if (isOpen && store.feedbackHistory.length === 0) {
-      store.fetchFeedbackHistory(20);
+    if (isOpen && feedbackHistory.length === 0) {
+      fetchFeedbackHistory(20);
     }
   };
 
@@ -151,13 +157,13 @@ function FeedbackHistoryPopover() {
           <Text size="2" weight="medium" className="block mb-2">
             {t("today.feedback.history_title")}
           </Text>
-          {store.feedbackHistory.length === 0 ? (
+          {feedbackHistory.length === 0 ? (
             <Text size="2" className="text-[var(--gray-9)]">
               {t("today.feedback.history_empty")}
             </Text>
           ) : (
             <div className="flex flex-col gap-1.5">
-              {store.feedbackHistory.map((entry) => (
+              {feedbackHistory.map((entry) => (
                 <div key={entry.id} className="flex items-center justify-between text-xs py-1 border-b border-[var(--gray-4)] last:border-0">
                   <div className="flex items-center gap-2 min-w-0">
                     <span className={`shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium ${

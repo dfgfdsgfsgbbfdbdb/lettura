@@ -13,6 +13,7 @@ import { useAudioPlayer } from "./useAudioPlayer";
 import { MiniPlayer } from "./MiniPlayer";
 import { formatTime } from "./utils";
 import { useBearStore } from "@/stores";
+import { useShallow } from "zustand/react/shallow";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/helpers/podcastDB";
@@ -35,9 +36,15 @@ interface LPodcastProps {
 
 export const LPodcast: React.FC<LPodcastProps> = ({ visible = true }) => {
   const [isMini, setIsMini] = useState(true);
-  const bearStore = useBearStore();
   const { currentTrack, setCurrentTrack, setTracks, podcastPlayingStatus } =
-    bearStore;
+    useBearStore(
+      useShallow((state) => ({
+        currentTrack: state.currentTrack,
+        setCurrentTrack: state.setCurrentTrack,
+        setTracks: state.setTracks,
+        podcastPlayingStatus: state.podcastPlayingStatus,
+      })),
+    );
 
   // 获取所有播客数据
   const podcasts = useLiveQuery(() =>
@@ -66,7 +73,7 @@ export const LPodcast: React.FC<LPodcastProps> = ({ visible = true }) => {
     if (tracks) {
       setTracks(tracks);
       // 如果没有当前播放的曲目，设置第一个曲目为当前曲目
-      if (!bearStore.currentTrack && tracks.length > 0) {
+      if (!currentTrack && tracks.length > 0) {
         setCurrentTrack(tracks[0]);
       }
     }

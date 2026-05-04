@@ -3,6 +3,7 @@ import { Podcast } from "@/helpers/podcastDB";
 import { wraperWithRadix } from "../ContentRender";
 import { ArticleResItem } from "@/db";
 import { useBearStore } from "@/stores";
+import { useShallow } from "zustand/react/shallow";
 import dayjs from "dayjs";
 
 export interface PodcastAdapter {
@@ -13,11 +14,11 @@ export interface PodcastAdapter {
 
 export function PodcastAdapter(props: PodcastAdapter) {
   const { article, content, medias } = props;
-  const { addToPlayListAndPlay } = useBearStore();
-
-  console.log("content", content);
-  console.log("medias", medias);
-  console.log("article", article);
+  const { addToPlayListAndPlay } = useBearStore(
+    useShallow((state) => ({
+      addToPlayListAndPlay: state.addToPlayListAndPlay,
+    })),
+  );
 
   function handleAddToPlayListAndPlay(media: any) {
     const { description, content, thumbnails } = media;

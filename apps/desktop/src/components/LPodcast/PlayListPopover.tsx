@@ -4,6 +4,7 @@ import { ListBulletIcon } from "@radix-ui/react-icons";
 import { AudioTrack } from "./index";
 import { PlayList } from "./PlayList";
 import { useBearStore } from "@/stores";
+import { useShallow } from "zustand/react/shallow";
 
 interface PlayListPopoverProps {
   currentTrack: AudioTrack | null;
@@ -14,15 +15,20 @@ export const PlayListPopover: React.FC<PlayListPopoverProps> = ({
   currentTrack,
   isPlaying,
 }) => {
-  const bearStore = useBearStore();
+  const { setCurrentTrack, updatePodcastPlayingStatus } = useBearStore(
+    useShallow((state) => ({
+      setCurrentTrack: state.setCurrentTrack,
+      updatePodcastPlayingStatus: state.updatePodcastPlayingStatus,
+    })),
+  );
 
   const handleTrackSelect = (track: AudioTrack) => {
     if (track.uuid !== currentTrack?.uuid) {
       // 只更新 store 中的状态，让 useAudioPlayer 的 effect 来处理播放
-      bearStore.setCurrentTrack(track);
-      bearStore.updatePodcastPlayingStatus(true);
+      setCurrentTrack(track);
+      updatePodcastPlayingStatus(true);
     } else {
-      bearStore.updatePodcastPlayingStatus(!isPlaying);
+      updatePodcastPlayingStatus(!isPlaying);
     }
   };
 
