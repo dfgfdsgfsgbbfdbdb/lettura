@@ -1,15 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { formatDistanceToNow, isToday, parseISO } from "date-fns";
-import {
-  Archive,
-  Bookmark,
-  Download,
-  FolderPlus,
-  Library,
-  Star,
-  Tags,
-} from "lucide-react";
+import { Download, Library, Star } from "lucide-react";
 import { Avatar, Button } from "@radix-ui/themes";
 import { ArticleResItem } from "@/db";
 import { MainPanel } from "@/components/MainPanel";
@@ -25,6 +17,8 @@ import {
 } from "@/helpers/starredApi";
 import { StarredOrganizeBar } from "./StarredOrganizeBar";
 import { showErrorToast } from "@/helpers/errorHandler";
+import { StarredSidebar } from "./StarredSidebar";
+import { StarredStatsPanel } from "./StarredStatsPanel";
 
 type FilterType = "all" | "read_later" | "archived" | "notes";
 
@@ -144,10 +138,6 @@ export const StarredPage = () => {
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
 
-  const [showCollectionInput, setShowCollectionInput] = useState(false);
-  const [newCollectionName, setNewCollectionName] = useState("");
-  const [isCreatingCollection, setIsCreatingCollection] = useState(false);
-
   const { articles, isLoading, isEmpty, isReachingEnd, size, setSize } =
     useArticle({
       collectionUuid: activeCollection,
@@ -255,21 +245,17 @@ export const StarredPage = () => {
     URL.revokeObjectURL(url);
   };
 
-  const handleCreateCollection = async () => {
-    const name = newCollectionName.trim();
-    if (!name) return;
-    setIsCreatingCollection(true);
-    try {
-      await createCollection(name);
-      setNewCollectionName("");
-      setShowCollectionInput(false);
-      refreshCollections();
-    } catch (err) {
-      showErrorToast(err, "Failed to create collection");
-    } finally {
-      setIsCreatingCollection(false);
-    }
-  };
+  const handleCreateCollection = useCallback(
+    async (name: string) => {
+      try {
+        await createCollection(name);
+        refreshCollections();
+      } catch (err) {
+        showErrorToast(err, "Failed to create collection");
+      }
+    },
+    [refreshCollections],
+  );
 
   const filterChips: { key: FilterType; label: string }[] = [
     { key: "all", label: t("starred.filter.all") },
@@ -281,88 +267,28 @@ export const StarredPage = () => {
   return (
     <MainPanel>
       <div className="flex h-full w-full overflow-hidden bg-[var(--gray-1)]">
-        <aside className="hidden w-[220px] shrink-0 flex-col border-r border-[var(--gray-5)] bg-[var(--gray-2)] md:flex">
-          <div className="border-b border-[var(--gray-5)] p-4">
-            <div className="text-sm font-semibold text-[var(--gray-12)]">
-              Starred
-            </div>
-            <div className="mt-1 text-xs leading-5 text-[var(--gray-10)]">
-              {t("starred.subtitle")}
-            </div>
-          </div>
-          <div className="flex-1 overflow-auto p-3">
-            <div className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[var(--gray-10)]">
-              {t("starred.sidebar.collections")}
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                setActiveCollection(null);
-                setActiveTag(null);
-                setActiveFilter("all");
-              }}
-              className={
-                activeCollection === null && activeTag === null
-                  ? "flex w-full items-center gap-2 rounded-md bg-[var(--gray-a3)] px-2 py-1.5 text-left text-xs font-medium text-[var(--gray-12)]"
-                  : "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs text-[var(--gray-11)] hover:bg-[var(--gray-a3)]"
-              }
-            >
-              <span
-                className="h-1.5 w-1.5 rounded-full"
-                style={{ background: "var(--amber-9)" }}
-              />
-              <span>{t("starred.sidebar.all")}</span>
-              <span className="ml-auto text-[10px] text-[var(--gray-9)]">
-                {articles.length}
-              </span>
-            </button>
-            {collections.map((collection) => (
-              <button
-                type="button"
-                key={collection.uuid}
-                onClick={() => {
-                  setActiveCollection(collection.uuid);
-                  setActiveTag(null);
-                  setActiveFilter("all");
-                }}
-                className={
-                  activeCollection === collection.uuid
-                    ? "flex w-full items-center gap-2 rounded-md bg-[var(--gray-a3)] px-2 py-1.5 text-left text-xs font-medium text-[var(--gray-12)]"
-                    : "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs text-[var(--gray-11)] hover:bg-[var(--gray-a3)]"
-                }
-              >
-                <span
-                  className="h-1.5 w-1.5 rounded-full"
-                  style={{ background: "var(--accent-9)" }}
-                />
-                <span>{collection.name}</span>
-              </button>
-            ))}
-
-            <div className="mb-2 mt-5 text-[10px] font-semibold uppercase tracking-wide text-[var(--gray-10)]">
-              {t("starred.sidebar.tags")}
-            </div>
-            {tags.map((tag) => (
-              <button
-                type="button"
-                key={tag.uuid}
-                onClick={() => {
-                  setActiveTag(tag.uuid);
-                  setActiveCollection(null);
-                  setActiveFilter("all");
-                }}
-                className={
-                  activeTag === tag.uuid
-                    ? "flex w-full items-center gap-2 rounded-md bg-[var(--gray-a3)] px-2 py-1.5 text-left text-xs font-medium text-[var(--gray-12)]"
-                    : "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs text-[var(--gray-11)] hover:bg-[var(--gray-a3)]"
-                }
-              >
-                <Tags size={12} />
-                #{tag.name}
-              </button>
-            ))}
-          </div>
-        </aside>
+        <StarredSidebar
+          collections={collections}
+          tags={tags}
+          activeCollection={activeCollection}
+          activeTag={activeTag}
+          onSelectCollection={(uuid) => {
+            setActiveCollection(uuid);
+            setActiveTag(null);
+            setActiveFilter("all");
+          }}
+          onSelectTag={(uuid) => {
+            setActiveTag(uuid);
+            setActiveCollection(null);
+            setActiveFilter("all");
+          }}
+          onSelectAll={() => {
+            setActiveCollection(null);
+            setActiveTag(null);
+            setActiveFilter("all");
+          }}
+          totalArticles={articles.length}
+        />
 
         <section
           className={
@@ -475,165 +401,14 @@ export const StarredPage = () => {
             />
           </div>
         ) : (
-          <aside className="hidden w-[280px] shrink-0 overflow-auto border-l border-[var(--gray-5)] bg-[var(--gray-2)] p-4 lg:block">
-            <div className="mb-5">
-              <div className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[var(--gray-10)]">
-                {t("starred.stats.title")}
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="rounded-lg border border-[var(--gray-5)] bg-[var(--color-panel-solid)] p-3">
-                  <div className="text-2xl font-bold text-[var(--gray-12)]">
-                    {articles.length}
-                  </div>
-                  <div className="text-xs text-[var(--gray-10)]">
-                    {t("starred.stats.all")}
-                  </div>
-                </div>
-                <div className="rounded-lg border border-[var(--gray-5)] bg-[var(--color-panel-solid)] p-3">
-                  <div className="text-2xl font-bold text-[var(--accent-11)]">
-                    {feedCount}
-                  </div>
-                  <div className="text-xs text-[var(--gray-10)]">
-                    {t("starred.stats.sources")}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-5">
-              <div className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[var(--gray-10)]">
-                {t("starred.suggest.title")}
-              </div>
-              <div className="rounded-lg border border-[var(--gray-5)] bg-[var(--color-panel-solid)] p-3">
-                {suggestion ? (
-                  <>
-                    <div className="flex items-center gap-2 text-sm font-semibold text-[var(--gray-12)]">
-                      <FolderPlus size={14} />
-                      {t("starred.suggest.suggested_name", {
-                        name: suggestion.collectionName,
-                      })}
-                    </div>
-                    <p className="mt-2 text-xs leading-5 text-[var(--gray-11)]">
-                      {t("starred.suggest.suggested_reason", {
-                        count: suggestion.articleCount,
-                        name: suggestion.collectionName,
-                      })}
-                    </p>
-                    {showCollectionInput ? (
-                      <div className="mt-3 flex gap-2">
-                        <input
-                          type="text"
-                          value={newCollectionName}
-                          onChange={(e) => setNewCollectionName(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") handleCreateCollection();
-                          }}
-                          placeholder={t(
-                            "starred.collection_input_placeholder",
-                          )}
-                          className="min-w-0 flex-1 rounded-md border border-[var(--gray-7)] bg-[var(--gray-2)] px-2 py-1 text-xs text-[var(--gray-12)] outline-none focus:border-[var(--accent-8)]"
-                          disabled={isCreatingCollection}
-                        />
-                        <Button
-                          size="1"
-                          onClick={handleCreateCollection}
-                          disabled={
-                            !newCollectionName.trim() || isCreatingCollection
-                          }
-                        >
-                          {isCreatingCollection
-                            ? t("Saving")
-                            : t("starred.suggest.create_button")}
-                        </Button>
-                      </div>
-                    ) : (
-                      <Button
-                        className="mt-3"
-                        size="1"
-                        onClick={() => {
-                          setNewCollectionName(suggestion.collectionName);
-                          setShowCollectionInput(true);
-                        }}
-                      >
-                        {t("starred.suggest.create_button")}
-                      </Button>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <div className="flex items-center gap-2 text-sm font-semibold text-[var(--gray-12)]">
-                      <FolderPlus size={14} />
-                      {t("starred.suggest.create")}
-                    </div>
-                    <p className="mt-2 text-xs leading-5 text-[var(--gray-11)]">
-                      {t("starred.suggest.has_notes", {
-                        count: withNotesCount,
-                      })}
-                    </p>
-                    {showCollectionInput ? (
-                      <div className="mt-3 flex gap-2">
-                        <input
-                          type="text"
-                          value={newCollectionName}
-                          onChange={(e) => setNewCollectionName(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") handleCreateCollection();
-                          }}
-                          placeholder={t(
-                            "starred.collection_input_placeholder",
-                          )}
-                          className="min-w-0 flex-1 rounded-md border border-[var(--gray-7)] bg-[var(--gray-2)] px-2 py-1 text-xs text-[var(--gray-12)] outline-none focus:border-[var(--accent-8)]"
-                          disabled={isCreatingCollection}
-                        />
-                        <Button
-                          size="1"
-                          onClick={handleCreateCollection}
-                          disabled={
-                            !newCollectionName.trim() || isCreatingCollection
-                          }
-                        >
-                          {isCreatingCollection
-                            ? t("Saving")
-                            : t("starred.suggest.create_button")}
-                        </Button>
-                      </div>
-                    ) : (
-                      <Button
-                        className="mt-3"
-                        size="1"
-                        onClick={() => setShowCollectionInput(true)}
-                      >
-                        {t("starred.suggest.create_button")}
-                      </Button>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[var(--gray-10)]">
-                {t("starred.queue.title")}
-              </div>
-              {articles.slice(0, 3).map((article) => (
-                <button
-                  type="button"
-                  key={article.uuid}
-                  onClick={() => setSelectedArticle(article)}
-                  className="mb-2 flex w-full items-start gap-2 rounded-md bg-[var(--gray-a2)] px-2 py-2 text-left text-xs text-[var(--gray-11)] hover:bg-[var(--gray-a3)]"
-                >
-                  <Bookmark size={13} className="mt-0.5 shrink-0" />
-                  <span className="line-clamp-2">{article.title}</span>
-                </button>
-              ))}
-              {articles.length === 0 && (
-                <div className="rounded-md bg-[var(--gray-a2)] px-3 py-3 text-xs leading-5 text-[var(--gray-10)]">
-                  <Archive size={14} className="mb-2" />
-                  {t("starred.queue.empty")}
-                </div>
-              )}
-            </div>
-          </aside>
+          <StarredStatsPanel
+            articles={articles}
+            feedCount={feedCount}
+            withNotesCount={withNotesCount}
+            suggestion={suggestion}
+            onOpenArticle={setSelectedArticle}
+            onCreateCollection={handleCreateCollection}
+          />
         )}
       </div>
     </MainPanel>
