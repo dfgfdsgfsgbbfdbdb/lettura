@@ -4,19 +4,15 @@ import { useParams, useMatch, useNavigate } from "react-router-dom";
 import { ArticleCol, ArticleColRefObject } from "@/layout/Article/ArticleCol";
 import { ArticleDialogView } from "@/components/ArticleView/DialogView";
 import { open } from "@tauri-apps/plugin-shell";
-import { View } from "./View";
+import { ArticleReaderDrawer } from "./ArticleReaderDrawer";
 import { useQuery } from "@/helpers/parseXML";
 import { LPodcast } from "@/components/LPodcast";
 import { useBearStore } from "@/stores";
 import { useShallow } from "zustand/react/shallow";
 import { RouteConfig } from "@/config";
 import { request } from "@/helpers/request";
-import { Text } from "@radix-ui/themes";
-import { BookOpen } from "lucide-react";
-import { useTranslation } from "react-i18next";
 
 export const ArticleContainer = () => {
-  const { t } = useTranslation();
   const [, type, queryFeedUuid] = useQuery();
   const params = useParams<{ uuid?: string; id?: string }>();
   const isArticleRoute = useMatch(RouteConfig.LOCAL_ARTICLE);
@@ -40,7 +36,7 @@ export const ArticleContainer = () => {
 
   // Deep-link: load article from URL params when store is empty
   useEffect(() => {
-    if (!isArticleRoute || !params.id) return;
+    if (!(isArticleRoute && params.id)) return;
     if (article) return;
 
     let cancelled = false;
@@ -95,38 +91,25 @@ export const ArticleContainer = () => {
   const shouldShowPodcast = store.tracks?.length > 0 || store.podcastPlayingStatus;
 
   return (
-    <div className="flex flex-row w-full h-full overflow-hidden">
-      <div className="h-full shrink-0 overflow-hidden" style={{ width: "var(--app-article-width)" }}>
+    <div className="flex h-full w-full flex-row overflow-hidden bg-[var(--color-background)]">
+      <div className="h-full min-w-0 flex-1 overflow-hidden">
         <ArticleCol
           feedUuid={feedUuid}
           type={type}
           ref={articleColRef}
-          wide={false}
+          wide={true}
+          showFilters={true}
+          showManagementActions={true}
         />
       </div>
 
-      <div
-        className={`h-full min-w-0 flex-1 border-l border-[var(--gray-4)] overflow-hidden flex flex-col ${
-          rightPanelExpanded ? "bg-[var(--color-background)]" : "bg-[var(--gray-1)]"
-        }`}
-      >
-        {rightPanelExpanded && article ? (
-          <View
-            article={article}
-            goNext={handleGoNext}
-            goPrev={handleGoPrev}
-            closable={true}
-            onClose={handleClose}
-          />
-        ) : (
-          <div className="flex flex-col items-center justify-center h-full text-center px-4">
-            <BookOpen size={32} className="text-[var(--gray-7)] mb-3" />
-            <Text size="2" className="text-[var(--gray-9)]">
-              {t("feeds.select_article")}
-            </Text>
-          </div>
-        )}
-      </div>
+      <ArticleReaderDrawer
+        article={article}
+        open={rightPanelExpanded}
+        goNext={handleGoNext}
+        goPrev={handleGoPrev}
+        onClose={handleClose}
+      />
 
       <LPodcast visible={shouldShowPodcast} />
       <ArticleDialogView
