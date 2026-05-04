@@ -47,7 +47,7 @@ export function PipelineIndicator({
           size="1"
           variant="ghost"
           className="text-[var(--gray-9)] hover:text-[var(--gray-12)]"
-          onClick={onTrigger}
+          onClick={() => onTrigger()}
         >
           <RefreshCw size={13} />
           {t("today.pipeline.refresh")}
@@ -101,7 +101,7 @@ export function PipelineIndicator({
             {t("today.pipeline.error")}
           </Text>
           {onRetry && (
-            <Button size="1" variant="ghost" onClick={onRetry}>
+            <Button size="1" variant="ghost" onClick={() => onRetry()}>
               {t("today.pipeline.retry")}
             </Button>
           )}

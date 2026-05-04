@@ -137,7 +137,7 @@ export function TopicMain({
                 {t("layout.topics.empty.trigger_analysis_desc")}
               </Text>
               <button
-                onClick={triggerPipeline}
+                onClick={() => triggerPipeline()}
                 className="px-4 py-2 bg-[var(--accent-9)] text-white rounded-md text-sm"
               >
                 {t("layout.topics.empty.trigger_analysis")}
@@ -178,7 +178,7 @@ export function TopicMain({
           </h1>
           <div className="flex items-center gap-2">
             <button
-              onClick={triggerPipeline}
+              onClick={() => triggerPipeline()}
               className="flex items-center gap-1 px-2 py-1 text-[11px] text-[var(--gray-11)] hover:text-[var(--gray-12)] border border-[var(--gray-4)] rounded-md hover:border-[var(--gray-6)] transition-colors"
             >
               <RefreshCw size={12} />
