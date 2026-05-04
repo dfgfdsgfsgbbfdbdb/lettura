@@ -1,12 +1,13 @@
 import { FC, useEffect, useLayoutEffect } from "react";
 import { memo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useDrag, useDrop } from "react-dnd";
+import { useDrag, useDrop, DragSourceMonitor } from "react-dnd";
 import type { Identifier, XYCoord } from "dnd-core";
 import { FeedResItem } from "@/db";
 import { DragItem, DropItem, ItemTypes } from "./ItemTypes";
 import clsx from "clsx";
 import { ItemView } from "./ItemView";
+import type { TreeItem } from "./utilities";
 
 export interface CardProps {
   uuid: string;
@@ -14,13 +15,17 @@ export interface CardProps {
   index: number;
   feed: FeedResItem;
   className?: String;
-  children?: any;
+  children?: React.ReactNode;
   arrow?: React.ReactNode;
-  isActive: Boolean;
-  isExpanded: Boolean;
+  isActive: boolean;
+  isExpanded: boolean;
   level?: number;
   toggleFolder: (uuid: string) => void;
-  onDrop: (item: any, dropResult: any, position: string | null) => void;
+  onDrop: (
+    item: TreeItem,
+    dropResult: TreeItem,
+    position: string | null,
+  ) => void;
 }
 
 export const SubscribeItem: FC<CardProps> = memo(
@@ -54,7 +59,7 @@ export const SubscribeItem: FC<CardProps> = memo(
           return;
         }
 
-        props.onDrop(item, feed, insertTileIndicator);
+        props.onDrop(item as TreeItem, feed as TreeItem, insertTileIndicator);
 
         return feed;
       },
@@ -120,7 +125,7 @@ export const SubscribeItem: FC<CardProps> = memo(
       item: () => {
         return { index, ...feed };
       },
-      collect: (monitor: any) => ({
+      collect: (monitor: DragSourceMonitor) => ({
         isDragging: monitor.isDragging(),
       }),
       end(item, monitor) {},

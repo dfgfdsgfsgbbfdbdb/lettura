@@ -11,7 +11,6 @@ import {
   FileText,
   Link,
   Link2,
-  RefreshCw,
 } from "lucide-react";
 import { listen } from "@tauri-apps/api/event";
 import { RouteConfig } from "@/config";
@@ -22,7 +21,7 @@ import { useBearStore } from "@/stores";
 import { AddFolder } from "../AddFolder";
 import { ContextMenu } from "@radix-ui/themes";
 import { DialogUnsubscribeFeed } from "@/layout/Setting/Content/DialogUnsubscribeFeed";
-import { open } from "@tauri-apps/plugin-shell";
+import { open as openExternal } from "@tauri-apps/plugin-shell";
 import { DialogEditFeed } from "@/layout/Setting/Content/DialogEditFeed";
 import { useQuery } from "@/helpers/parseXML";
 import { ListContainer } from "./ListContainer";
@@ -62,8 +61,6 @@ const ChannelList = (): JSX.Element => {
       subscribes: state.subscribes,
       getSubscribes: state.getSubscribes,
 
-      globalSyncStatus: state.globalSyncStatus,
-      syncAllArticles: state.syncAllArticles,
     })),
   );
 
@@ -206,17 +203,6 @@ const ChannelList = (): JSX.Element => {
         )}
         ref={listRef}
       >
-        <div className="mb-2 flex items-center justify-end">
-          <button
-            onClick={() => store.syncAllArticles()}
-            disabled={store.globalSyncStatus}
-            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-[var(--gray-11)] transition hover:bg-[var(--gray-a3)] hover:text-[var(--gray-12)] disabled:opacity-50"
-            title={t("Sync All")}
-          >
-            <RefreshCw size={14} className={store.globalSyncStatus ? "animate-spin" : ""} />
-            <span>{store.globalSyncStatus ? t("Syncing...") : t("Sync All")}</span>
-          </button>
-        </div>
         <ContextMenu.Root onOpenChange={handleContextMenuChange}>
           <ContextMenu.Trigger>
             <div>
@@ -258,7 +244,7 @@ const ChannelList = (): JSX.Element => {
                     <ContextMenu.Item
                       onClick={() =>
                         store.feedContextMenuTarget?.link &&
-                        open(store.feedContextMenuTarget?.link)
+                        openExternal(store.feedContextMenuTarget?.link)
                       }
                     >
                       <ExternalLink size={14} /> {t("Open home page")}
