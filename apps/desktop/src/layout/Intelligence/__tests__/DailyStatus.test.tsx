@@ -25,10 +25,11 @@ describe("DailyStatus", () => {
       is_stale: false,
     };
 
-    render(<DailyStatus overview={overview} loading={false} />);
+    render(<DailyStatus overview={overview} loading={false} highSignalCount={2} />);
     const articlesUnits = screen.getAllByText(/12.*today.right_panel.daily_status.articles_unit/);
     expect(articlesUnits.length).toBe(1);
-    expect(screen.getAllByText(/3.*today.right_panel.daily_status.signals_unit/).length).toBe(2);
+    expect(screen.getAllByText(/3.*today.right_panel.daily_status.signals_unit/).length).toBe(1);
+    expect(screen.getByText(/2.*today.right_panel.daily_status.signals_unit/)).toBeInTheDocument();
     expect(screen.getByText("today.right_panel.daily_status.synced")).toBeInTheDocument();
     expect(screen.getByText("today.right_panel.daily_status.analyzed")).toBeInTheDocument();
     expect(screen.getByText("today.right_panel.daily_status.high_signal")).toBeInTheDocument();

@@ -232,7 +232,7 @@ export function TodayPage() {
     return (
       <div className="flex flex-col h-full overflow-auto">
         <EvidencePanel signal={activeReadingSignal ?? store.signals[0] ?? null} />
-        <DailyStatus overview={store.overview} loading={store.overviewLoading} progress={store.pipelineStatus === "running" ? store.pipelineProgress : undefined} />
+        <DailyStatus overview={store.overview} loading={store.overviewLoading} progress={store.pipelineStatus === "running" ? store.pipelineProgress : undefined} highSignalCount={store.signals.filter(s => s.relevance_score >= 0.8).length} />
         <NextSteps
           hasSignals={hasSignals}
           hasApiKey={hasApiKey}
@@ -264,7 +264,9 @@ export function TodayPage() {
           lastUpdated={store.lastUpdated}
         />
 
-        {store.signalsLoading && !hasSignals ? (
+        {store.signalsError ? (
+          <TodayEmptyState type="load_error" onRetry={() => store.fetchSignals()} />
+        ) : store.signalsLoading && !hasSignals ? (
           <Flex align="center" justify="center" className="flex-1">
             <Loader2 className="animate-spin text-[var(--gray-8)]" size={32} />
           </Flex>

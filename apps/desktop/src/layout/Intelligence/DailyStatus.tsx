@@ -7,9 +7,10 @@ interface DailyStatusProps {
   overview: TodayOverview | null;
   loading: boolean;
   progress?: number;
+  highSignalCount?: number;
 }
 
-export function DailyStatus({ overview, loading, progress }: DailyStatusProps) {
+export function DailyStatus({ overview, loading, progress, highSignalCount }: DailyStatusProps) {
   const { t } = useTranslation();
 
   return (
@@ -42,10 +43,10 @@ export function DailyStatus({ overview, loading, progress }: DailyStatusProps) {
           </div>
           <div className="flex min-w-0 justify-between gap-3 text-xs">
             <span className="min-w-0 break-words text-[var(--gray-9)]">{t("today.right_panel.daily_status.high_signal")}</span>
-            <span className="shrink-0 whitespace-nowrap text-[var(--accent-9)] font-semibold">{overview.signal_count} {t("today.right_panel.daily_status.signals_unit")}</span>
+            <span className="shrink-0 whitespace-nowrap text-[var(--accent-9)] font-semibold">{highSignalCount ?? 0} {t("today.right_panel.daily_status.signals_unit")}</span>
           </div>
           <div className="h-1 bg-[var(--gray-3)] rounded-full overflow-hidden mt-1">
-            <div className="h-full bg-[var(--accent-9)] rounded-full transition-all" style={{ width: `${Math.round((progress ?? 1) * 100)}%` }} />
+            <div className="h-full bg-[var(--accent-9)] rounded-full transition-all" style={{ width: `${Math.round((progress ?? 0) * 100)}%` }} />
           </div>
         </div>
       )}

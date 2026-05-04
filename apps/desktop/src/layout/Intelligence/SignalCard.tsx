@@ -70,13 +70,14 @@ export function SignalCard({ signal, isActive, isDimmed, onInlineRead, activeRea
       toggleSourceExpand: state.toggleSourceExpand,
       fetchSignalDetail: state.fetchSignalDetail,
       submitFeedback: state.submitFeedback,
+      clearFeedback: state.clearFeedback,
       feedbackMap: state.feedbackMap,
       scrollPositionMap: state.scrollPositionMap,
       setScrollPosition: state.setScrollPosition,
     })),
   );
 
-  const isExpanded = isActive || store.expandedSignalId !== signal.id;
+  const isExpanded = isActive || store.expandedSignalId === signal.id;
   const detail = store.signalDetails[signal.id];
   const sources = detail?.all_sources ?? signal.sources;
   const currentFeedback = store.feedbackMap[signal.id] ?? null;
@@ -145,6 +146,8 @@ export function SignalCard({ signal, isActive, isDimmed, onInlineRead, activeRea
   return (
     <div
       className={`group rounded-lg border bg-[var(--color-background)] p-4 transition-all hover:shadow-sm cursor-default ${
+        currentFeedback === "not_relevant" ? "opacity-50" : ""
+      } ${
         isActive
           ? "border-2 border-[var(--accent-9)] shadow-sm"
           : "border-[var(--gray-4)] hover:border-[var(--gray-7)]"
@@ -163,6 +166,18 @@ export function SignalCard({ signal, isActive, isDimmed, onInlineRead, activeRea
               />
             ))}
           </span>
+
+          {!isDimmed && (
+            <span className={`text-[10px] font-medium ${
+              level === "high" ? "text-[var(--accent-9)]" 
+              : level === "medium" ? "text-[#d97706]" 
+              : "text-[var(--gray-9)]"
+            }`}>
+              {level === "high" ? t("today.signal.level_top") 
+               : level === "medium" ? t("today.signal.level_watch") 
+               : t("today.signal.level_signal")}
+            </span>
+          )}
 
           {signal.topic_id && signal.topic_title && signal.topic_uuid && (
             <Link
@@ -190,7 +205,9 @@ export function SignalCard({ signal, isActive, isDimmed, onInlineRead, activeRea
         <Text
           size="4"
           weight="medium"
-          className="text-[var(--gray-12)] leading-snug cursor-pointer hover:text-[var(--accent-9)] transition-colors"
+          className={`text-[var(--gray-12)] leading-snug cursor-pointer hover:text-[var(--accent-9)] transition-colors ${
+            currentFeedback === "not_relevant" ? "line-through" : ""
+          }`}
           style={{ fontSize: 15, fontWeight: 600 }}
           onClick={handleToggleExpand}
         >
@@ -329,6 +346,14 @@ export function SignalCard({ signal, isActive, isDimmed, onInlineRead, activeRea
             >
               {t("today.feedback.follow_topic")}
             </button>
+            {currentFeedback && (
+              <button
+                onClick={() => store.clearFeedback(signal.id)}
+                className="flex items-center gap-1 text-xs text-[var(--gray-9)] hover:text-[var(--gray-11)] transition-colors"
+              >
+                {t("today.feedback.undo")}
+              </button>
+            )}
         </Flex>
         )}
       </Flex>

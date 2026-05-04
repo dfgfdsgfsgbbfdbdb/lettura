@@ -34,10 +34,13 @@ const mockStore = {
   triggerPipeline: vi.fn(),
   updateSettingDialogStatus: vi.fn(),
   setOnboardingOpen: vi.fn(),
+  feedbackHistory: [] as unknown[],
+  fetchFeedbackHistory: vi.fn(),
 };
 
 vi.mock("@/stores", () => ({
-  useBearStore: (selector: (state: typeof mockStore) => unknown) => selector(mockStore),
+  useBearStore: (selector?: (state: typeof mockStore) => unknown) =>
+    selector ? selector(mockStore) : mockStore,
 }));
 vi.mock("zustand/react/shallow", () => ({
   useShallow: (selector: unknown) => selector,

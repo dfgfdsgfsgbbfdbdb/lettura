@@ -88,17 +88,6 @@ export function PipelineIndicator({
         <Text size="1" className="text-[var(--green-9)]">
           {t("today.pipeline.done")}
         </Text>
-        {onTrigger && (
-          <Button
-            size="1"
-            variant="ghost"
-            className="text-[var(--gray-9)] hover:text-[var(--gray-12)] ml-1"
-            onClick={onTrigger}
-          >
-            <RefreshCw size={13} />
-            {t("today.pipeline.refresh")}
-          </Button>
-        )}
       </Flex>
     );
   }

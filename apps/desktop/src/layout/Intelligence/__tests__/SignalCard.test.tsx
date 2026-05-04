@@ -148,29 +148,31 @@ describe("SignalCard", () => {
   });
 
   describe("Source expand/collapse", () => {
-    it("T-SRC-01: sources expanded by default", () => {
+    it("T-SRC-01: sources collapsed by default (expandedSignalId is null)", () => {
       const signal = makeSignal();
+      mockStore.expandedSignalId = null;
       render(<SignalCard signal={signal} />);
 
       const sourceListContainer = screen.getByTestId("source-list").parentElement;
-      expect(sourceListContainer).toHaveStyle({ maxHeight: "2000px", opacity: "1" });
+      expect(sourceListContainer).toHaveStyle({ maxHeight: "0px", opacity: "0" });
     });
 
-    it("T-SRC-02: clicking collapse hides SignalSourceList with collapsed styles", () => {
+    it("T-SRC-02: expanding shows SignalSourceList, collapsing hides it", () => {
       const signal = makeSignal();
       mockStore.expandedSignalId = signal.id;
       const { rerender } = render(<SignalCard signal={signal} />);
 
       const sourceListContainer = screen.getByTestId("source-list").parentElement;
-      expect(sourceListContainer).toHaveStyle({ maxHeight: "0px", opacity: "0" });
+      expect(sourceListContainer).toHaveStyle({ maxHeight: "2000px", opacity: "1" });
 
       mockStore.expandedSignalId = null;
       rerender(<SignalCard signal={signal} />);
-      expect(screen.getByTestId("source-list").parentElement).toHaveStyle({ maxHeight: "2000px", opacity: "1" });
+      expect(screen.getByTestId("source-list").parentElement).toHaveStyle({ maxHeight: "0px", opacity: "0" });
     });
 
     it("T-SRC-03: clicking collapse button calls toggleSourceExpand", () => {
       const signal = makeSignal();
+      mockStore.expandedSignalId = signal.id;
       render(<SignalCard signal={signal} />);
 
       const collapseButton = screen.getByText("today.sources.collapse");
