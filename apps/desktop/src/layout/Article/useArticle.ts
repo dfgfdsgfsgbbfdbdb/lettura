@@ -3,12 +3,21 @@ import { useBearStore } from "@/stores";
 import { request } from "@/helpers/request";
 import { useMatch } from "react-router-dom";
 import { RouteConfig } from "@/config";
-import { omitBy, isUndefined } from "lodash";
 import { ArticleResItem } from "@/db";
 import { useMemo, useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 const PAGE_SIZE = 20;
+
+function omitUndefined<T extends Record<string, unknown>>(obj: T): Partial<T> {
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined) {
+      result[key] = value;
+    }
+  }
+  return result as Partial<T>;
+}
 
 export interface UseArticleProps {
   feedUuid?: string;
@@ -56,7 +65,7 @@ export function useArticle(props: UseArticleProps) {
         : isStarred
           ? 1
           : undefined;
-    return omitBy({
+    return omitUndefined({
       read_status: isStarred ? undefined : store.currentFilter.id,
       limit: PAGE_SIZE,
       feed_uuid: feedUuid,
@@ -69,7 +78,7 @@ export function useArticle(props: UseArticleProps) {
       is_archived: isArchived !== undefined ? (isArchived ? 1 : 0) : undefined,
       is_read_later: isReadLater !== undefined ? (isReadLater ? 1 : 0) : undefined,
       has_notes: hasNotes ? 1 : undefined,
-    }, isUndefined);
+    });
   }, [
     feedUuid,
     type,
