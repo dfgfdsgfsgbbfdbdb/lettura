@@ -7,7 +7,6 @@ import { Theme } from "@radix-ui/themes";
 import { DialogAboutApp } from "./components/About";
 import { OnboardingDialog } from "./components/Onboarding";
 import { useShallow } from "zustand/react/shallow";
-import { Toaster } from "sonner";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { showErrorToast } from "@/helpers/errorHandler";
 import { useNavigate } from "react-router-dom";
@@ -135,7 +134,6 @@ function App() {
       accentColor={accentColor}
       panelBackground="translucent"
     >
-      <Toaster />
       <ErrorBoundary>
         <div className="h-full max-h-full ">
           <LocalPage />
