@@ -316,7 +316,12 @@ async fn execute_pipeline_steps(
     return Ok(0);
   }
 
-  if ai_config.enable_embedding {
+  let use_embedding = ai_config.enable_embedding || {
+    let resolved = crate::ai::config::resolve_embedding_model(&ai_config.embedding_model, &ai_config.base_url);
+    resolved != ai_config.embedding_model
+  };
+
+  if use_embedding {
     execute_with_embedding(
       conn,
       ai_config,
