@@ -1,10 +1,12 @@
 @import "@radix-ui/colors/gray.css";
 @import "@radix-ui/colors/blue.css";
 @import "@radix-ui/colors/green.css";
+@import "@radix-ui/colors/amber.css";
 @import "@radix-ui/colors/red.css";
 @import "@radix-ui/colors/gray-dark.css";
 @import "@radix-ui/colors/blue-dark.css";
 @import "@radix-ui/colors/green-dark.css";
+@import "@radix-ui/colors/amber-dark.css";
 @import "@radix-ui/colors/red-dark.css";
 @import "@radix-ui/colors/mauve.css";
 @import "@radix-ui/colors/mauve-dark.css";
@@ -14,36 +16,36 @@
 :root,
 .light,
 .light-theme {
-  --default-1: #fcfcfd;
-  --default-2: #f9f9fa;
-  --default-3: #f0f0f2;
-  --default-4: #e8e8eb;
-  --default-5: #e1e1e4;
-  --default-6: #d9d9dd;
-  --default-7: #ceced3;
-  --default-8: #bbbbc1;
-  --default-9: #18181b;
-  --default-10: #2f2f32;
-  --default-11: #636369;
-  --default-12: #1f1f22;
+  --default-1: #fcfcfc;
+  --default-2: #f9f9f9;
+  --default-3: #f0f0f0;
+  --default-4: #e8e8e8;
+  --default-5: #e0e0e0;
+  --default-6: #d9d9d9;
+  --default-7: #cecece;
+  --default-8: #bbbbbb;
+  --default-9: #181818;
+  --default-10: #303030;
+  --default-11: #636363;
+  --default-12: #1f1f1f;
 
-  --default-a1: #00005503;
-  --default-a2: #00002b06;
-  --default-a3: #0000220f;
-  --default-a4: #00002217;
-  --default-a5: #00001a1e;
-  --default-a6: #00001b26;
-  --default-a7: #00001b31;
-  --default-a8: #00001744;
-  --default-a9: #000003e7;
-  --default-a10: #000004d0;
-  --default-a11: #00000a9c;
-  --default-a12: #000003e0;
+  --default-a1: #00000003;
+  --default-a2: #00000006;
+  --default-a3: #0000000f;
+  --default-a4: #00000017;
+  --default-a5: #0000001e;
+  --default-a6: #00000026;
+  --default-a7: #00000031;
+  --default-a8: #00000044;
+  --default-a9: #000000e7;
+  --default-a10: #000000d0;
+  --default-a11: #0000009c;
+  --default-a12: #000000e0;
 
   --default-contrast: #fff;
-  --default-surface: #f8f8f9cc;
-  --default-indicator: #18181b;
-  --default-track: #18181b;
+  --default-surface: #f8f8f8cc;
+  --default-indicator: #181818;
+  --default-track: #181818;
 
   --accent-1: var(--default-1);
   --accent-2: var(--default-2);
@@ -76,19 +78,6 @@
   --accent-indicator: var(--default-indicator);
   --accent-track: var(--default-track);
 
-  /* Calm Intelligence - Blue-purple accent for Today signals */
-  --calm-accent: #6366f1;
-  --calm-accent-light: #eef2ff;
-  --calm-accent-muted: #a5b4fc;
-  --calm-bg: #fafafa;
-  --calm-card-bg: #ffffff;
-  --calm-card-border: #f0f0f2;
-  --calm-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  --calm-card-radius: 12px;
-  --calm-tag-bg: #f5f3ff;
-  --calm-tag-text: #7c3aed;
-  --calm-tag-border: #ede9fe;
-  --calm-tag-radius: 6px;
   --right-panel-collapsed-width: 280px;
   --right-panel-expanded-width: 480px;
 }
@@ -98,54 +87,36 @@
     :root,
     .light,
     .light-theme {
-      --default-1: oklch(99.1% 0.001 285.9);
-      --default-2: oklch(98.2% 0.002 285.9);
-      --default-3: oklch(95.6% 0.003 285.9);
-      --default-4: oklch(93.1% 0.004 285.9);
-      --default-5: oklch(91% 0.005 285.9);
-      --default-6: oklch(88.8% 0.005 285.9);
-      --default-7: oklch(85.3% 0.007 285.9);
-      --default-8: oklch(79.4% 0.009 285.9);
-      --default-9: oklch(21% 0.006 285.9);
-      --default-10: oklch(30.7% 0.006 285.9);
-      --default-11: oklch(50.3% 0.008 285.9);
-      --default-12: oklch(24.1% 0.006 285.9);
+      --default-1: color(display-p3 0.988 0.988 0.988);
+      --default-2: color(display-p3 0.975 0.975 0.975);
+      --default-3: color(display-p3 0.939 0.939 0.939);
+      --default-4: color(display-p3 0.908 0.908 0.908);
+      --default-5: color(display-p3 0.88 0.88 0.88);
+      --default-6: color(display-p3 0.849 0.849 0.849);
+      --default-7: color(display-p3 0.807 0.807 0.807);
+      --default-8: color(display-p3 0.732 0.732 0.732);
+      --default-9: oklch(14.4% 0 0);
+      --default-10: oklch(26.5% 0 0);
+      --default-11: oklch(49.2% 0 0);
+      --default-12: oklch(17.8% 0 0);
 
-      --default-a1: color(display-p3 0.024 0.024 0.349 / 0.012);
-      --default-a2: color(display-p3 0.024 0.024 0.184 / 0.024);
-      --default-a3: color(display-p3 0.004 0.004 0.137 / 0.059);
-      --default-a4: color(display-p3 0.012 0.012 0.141 / 0.091);
-      --default-a5: color(display-p3 0.004 0.004 0.106 / 0.118);
-      --default-a6: color(display-p3 0.008 0.008 0.114 / 0.15);
-      --default-a7: color(display-p3 0.008 0.008 0.11 / 0.193);
-      --default-a8: color(display-p3 0.004 0.004 0.078 / 0.267);
-      --default-a9: color(display-p3 0 0 0.012 / 0.906);
-      --default-a10: color(display-p3 0 0 0.016 / 0.816);
-      --default-a11: color(display-p3 0 0 0.031 / 0.612);
-      --default-a12: color(display-p3 0 0 0.012 / 0.879);
-
-      --default-contrast: #fff;
-      --default-surface: color(display-p3 0.973 0.973 0.976 / 0.8);
-      --default-indicator: oklch(21% 0.006 285.9);
-      --default-track: oklch(21% 0.006 285.9);
-
-      --default-a1: color(display-p3 0.024 0.024 0.349 / 0.012);
-      --default-a2: color(display-p3 0.024 0.024 0.184 / 0.024);
-      --default-a3: color(display-p3 0.004 0.004 0.137 / 0.059);
-      --default-a4: color(display-p3 0.012 0.012 0.141 / 0.091);
-      --default-a5: color(display-p3 0.004 0.004 0.106 / 0.118);
-      --default-a6: color(display-p3 0.008 0.008 0.114 / 0.15);
-      --default-a7: color(display-p3 0.008 0.008 0.11 / 0.193);
-      --default-a8: color(display-p3 0.004 0.004 0.078 / 0.267);
-      --default-a9: color(display-p3 0 0 0.012 / 0.906);
-      --default-a10: color(display-p3 0 0 0.016 / 0.816);
-      --default-a11: color(display-p3 0 0 0.031 / 0.612);
-      --default-a12: color(display-p3 0 0 0.012 / 0.879);
+      --default-a1: color(display-p3 0 0 0 / 0.012);
+      --default-a2: color(display-p3 0 0 0 / 0.024);
+      --default-a3: color(display-p3 0 0 0 / 0.059);
+      --default-a4: color(display-p3 0 0 0 / 0.091);
+      --default-a5: color(display-p3 0 0 0 / 0.118);
+      --default-a6: color(display-p3 0 0 0 / 0.15);
+      --default-a7: color(display-p3 0 0 0 / 0.193);
+      --default-a8: color(display-p3 0 0 0 / 0.267);
+      --default-a9: color(display-p3 0 0 0 / 0.906);
+      --default-a10: color(display-p3 0 0 0 / 0.816);
+      --default-a11: color(display-p3 0 0 0 / 0.612);
+      --default-a12: color(display-p3 0 0 0 / 0.879);
 
       --default-contrast: #fff;
-      --default-surface: color(display-p3 0.973 0.973 0.976 / 0.8);
-      --default-indicator: oklch(21% 0.006 285.9);
-      --default-track: oklch(21% 0.006 285.9);
+      --default-surface: color(display-p3 0.973 0.973 0.973 / 0.8);
+      --default-indicator: oklch(14.4% 0 0);
+      --default-track: oklch(14.4% 0 0);
 
       --accent-1: var(--default-1);
       --accent-2: var(--default-2);
@@ -244,20 +215,6 @@
   --accent-surface: var(--default-surface);
   --accent-indicator: var(--default-indicator);
   --accent-track: var(--default-track);
-
-  /* Calm Intelligence - Dark mode */
-  --calm-accent: #818cf8;
-  --calm-accent-light: #1e1b4b;
-  --calm-accent-muted: #6366f1;
-  --calm-bg: #111;
-  --calm-card-bg: #191919;
-  --calm-card-border: #2a2a2a;
-  --calm-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --calm-card-radius: 12px;
-  --calm-tag-bg: #1e1b4b;
-  --calm-tag-text: #a78bfa;
-  --calm-tag-border: #312e81;
-  --calm-tag-radius: 6px;
 }
 
 @supports (color: color(display-p3 1 1 1)) {

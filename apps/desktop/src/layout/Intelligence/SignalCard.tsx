@@ -26,9 +26,9 @@ const BAR_CONFIGS = [
 
 const TOPIC_COLORS = [
   { bg: "bg-[var(--accent-3)]", text: "text-[var(--accent-9)]" },
-  { bg: "bg-[#f0fdf4]", text: "text-[#16a34a]" },
-  { bg: "bg-[#fffbeb]", text: "text-[#d97706]" },
-  { bg: "bg-[#eff6ff]", text: "text-[#2563eb]" },
+  { bg: "bg-[var(--green-3)]", text: "text-[var(--green-11)]" },
+  { bg: "bg-[var(--amber-3)]", text: "text-[var(--amber-11)]" },
+  { bg: "bg-[var(--blue-3)]", text: "text-[var(--blue-11)]" },
 ];
 
 function hashString(str: string): number {
@@ -170,7 +170,7 @@ export function SignalCard({ signal, isActive, isDimmed, onInlineRead, activeRea
           {!isDimmed && (
             <span className={`text-[10px] font-medium ${
               level === "high" ? "text-[var(--accent-9)]" 
-              : level === "medium" ? "text-[#d97706]" 
+              : level === "medium" ? "text-[var(--amber-11)]" 
               : "text-[var(--gray-9)]"
             }`}>
               {level === "high" ? t("today.signal.level_top") 
@@ -271,7 +271,7 @@ export function SignalCard({ signal, isActive, isDimmed, onInlineRead, activeRea
             />
           </div>
           {!isHighConfidence && (
-            <span className="text-[10px] font-medium rounded-full px-1.5 py-0.5 bg-[#fffbeb] text-[#d97706]">
+            <span className="text-[10px] font-medium rounded-full px-1.5 py-0.5 bg-[var(--amber-3)] text-[var(--amber-11)]">
               {t("today.signal_card.unverified")}
             </span>
           )}
