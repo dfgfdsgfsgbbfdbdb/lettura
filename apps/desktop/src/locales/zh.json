@@ -699,7 +699,9 @@
       "remove_read_later": "移出稍后读"
     },
     "view": {
-      "back": "返回"
+      "back": "返回",
+      "prev": "上一篇",
+      "next": "下一篇"
     }
   },
   "Appearance & Reading": "外观与阅读",

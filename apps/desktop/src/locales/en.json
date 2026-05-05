@@ -677,7 +677,9 @@
       "remove_read_later": "Remove from read later"
     },
     "view": {
-      "back": "Back"
+      "back": "Back",
+      "prev": "Prev",
+      "next": "Next"
     }
   },
   "Appearance & Reading": "Appearance & Reading",

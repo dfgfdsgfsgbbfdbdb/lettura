@@ -12,6 +12,7 @@ import { ArticleResItem } from "@/db";
 import { ChevronLeft, X } from "lucide-react";
 import { useBearStore } from "@/stores";
 import { useNavigate, useParams } from "react-router-dom";
+import { ArticleNavFooter } from "@/components/ArticleNavFooter";
 
 export interface ArticleViewProps {
   article: ArticleResItem | null;
@@ -26,6 +27,8 @@ export function View(props: ArticleViewProps) {
   const navigate = useNavigate();
   const params = useParams<{ uuid?: string }>();
   const setArticle = useBearStore((state) => state.setArticle);
+  const hasMorePrev = useBearStore((state) => state.hasMorePrev);
+  const hasMoreNext = useBearStore((state) => state.hasMoreNext);
 
   const renderPlaceholder = () => {
     return (
@@ -70,7 +73,7 @@ export function View(props: ArticleViewProps) {
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-1 min-w-0 bg-[var(--color-panel-solid)]">
+    <div className="flex h-full min-h-0 flex-1 min-w-0 flex-col bg-[var(--color-panel-solid)]">
       <AnimatePresence>
         <motion.article
           key={props.article?.uuid || "view"}
@@ -78,10 +81,10 @@ export function View(props: ArticleViewProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.16 }}
-          className="flex h-full min-h-0 w-full overflow-hidden"
+          className="flex min-h-0 flex-1 overflow-hidden"
         >
           <ScrollBox
-            className="h-full min-h-0 w-full"
+            className="min-h-0 w-full"
             ref={scrollBoxRef}
           >
             <div className="mx-auto flex min-h-full w-full max-w-[680px] flex-col px-8 py-10 font-[var(--reading-font-body)]">
@@ -119,6 +122,14 @@ export function View(props: ArticleViewProps) {
           </ScrollBox>
         </motion.article>
       </AnimatePresence>
+      <ArticleNavFooter
+        canPrev={hasMorePrev}
+        canNext={hasMoreNext}
+        onPrev={props.goPrev}
+        onNext={props.goNext}
+        prevLabel={t("article.view.prev")}
+        nextLabel={t("article.view.next")}
+      />
     </div>
   );
 }
