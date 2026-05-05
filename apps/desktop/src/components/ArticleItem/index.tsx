@@ -1,10 +1,12 @@
 import React, { ForwardedRef, useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import { useBearStore } from "@/stores";
 import { ArticleResItem } from "@/db";
 import { ArticleReadStatus } from "@/typing";
 import clsx from "clsx";
 import { useShallow } from "zustand/react/shallow";
+import { RouteConfig } from "@/config";
 
 export type ArticleItemDensity = "regular" | "compact";
 
@@ -25,10 +27,11 @@ export const ArticleItem = React.forwardRef(
       })),
     );
     const { article, density = "regular", onRead } = props;
+    const navigate = useNavigate();
     const [highlight, setHighlight] = useState<boolean>();
     const [readStatus, setReadStatus] = useState(article.read_status);
 
-    const updateCurrentArticle = (article: any) => {
+    const updateCurrentArticle = (article: ArticleResItem) => {
       const nextArticle = {
         ...article,
         read_status: ArticleReadStatus.READ,
@@ -41,10 +44,25 @@ export const ArticleItem = React.forwardRef(
 
       store.updateArticleStatus({ ...article }, ArticleReadStatus.READ);
       store.setArticle(nextArticle);
+
+      if (article.feed_uuid && article.id) {
+        navigate(
+          RouteConfig.LOCAL_ARTICLE.replace(":uuid", article.feed_uuid).replace(
+            ":id",
+            String(article.id),
+          ),
+        );
+      }
     };
 
     const handleClick = () => {
       updateCurrentArticle(article);
+    };
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLLIElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        updateCurrentArticle(article);
+      }
     };
 
     const timeLabel = formatDistanceToNow(
@@ -79,6 +97,9 @@ export const ArticleItem = React.forwardRef(
           },
         )}
         onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        role="button"
+        tabIndex={0}
         ref={ref}
         id={article.uuid}
       >
