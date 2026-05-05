@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { formatDistanceToNow, parseISO } from "date-fns";
-import { ChevronLeft, ChevronRight, ExternalLink, Star, Loader2, AlertCircle, RotateCw } from "lucide-react";
-import DOMPurify from "dompurify";
+import { ChevronLeft, ExternalLink, Star, Loader2, AlertCircle, RotateCw } from "lucide-react";
 import type { SignalSource } from "@/stores/createTodaySlice";
 import type { ArticleResItem } from "@/db";
 import { useBearStore } from "@/stores";
+import { pickArticleContent, processArticleHtml } from "@/helpers/articleContent";
+import { wraperWithRadix } from "@/components/ArticleView/ContentRender";
+import { ArticleNavFooter } from "@/components/ArticleNavFooter";
 
 interface InlineReaderProps {
   source: SignalSource;
@@ -17,33 +19,6 @@ interface InlineReaderProps {
   articleLoading: boolean;
   articleError: string | null;
   onRetry: () => void;
-}
-
-function getArticleContent(detail: ArticleResItem | null, excerpt: string | null): string {
-  if (detail) {
-    const { content, description } = detail;
-    if (content && description) {
-      return content.length > description.length ? content : description;
-    }
-    if (content || description) {
-      return content || description || "";
-    }
-  }
-  return excerpt?.trim() || "";
-}
-
-function sanitizeContent(html: string): string {
-  let result = html;
-  result = result.replace(/<a[^>]+>/gi, (a: string) => {
-    if (!/\starget\s*=/gi.test(a)) {
-      return a.replace(/^<a\s/, '<a target="_blank"');
-    }
-    return a;
-  });
-  result = result.replace(/<img\s+(?:[^>]*?\s+)?src="([^"]*)"[^>]*>/g, (match, src) => {
-    return `<img src="${src}" style="max-width:100%;height:auto;" />`;
-  });
-  return DOMPurify.sanitize(result);
 }
 
 function formatSourceDate(date?: string) {
@@ -75,8 +50,14 @@ export function InlineReader({
   const canGoNext = currentIndex < sources.length - 1;
   const sourceDate = formatSourceDate(source.pub_date);
 
-  const htmlContent = sanitizeContent(getArticleContent(articleDetail, source.excerpt));
-  const hasContent = htmlContent.length > 0;
+  const rawContent = pickArticleContent(
+    articleDetail?.content,
+    articleDetail?.description,
+    source.excerpt,
+  );
+  const processedHtml = processArticleHtml(rawContent);
+  const contentElement = wraperWithRadix(processedHtml);
+  const hasContent = rawContent.length > 0;
 
   return (
     <div className="flex h-full min-w-0 flex-col">
@@ -171,10 +152,9 @@ export function InlineReader({
         )}
 
         {!articleLoading && !articleError && hasContent && (
-          <div
-            className="prose prose-sm max-w-none break-words text-[14px] text-[var(--gray-11)] leading-[1.8]"
-            dangerouslySetInnerHTML={{ __html: htmlContent }}
-          />
+          <div className="prose prose-sm max-w-none break-words text-[14px] text-[var(--gray-11)] leading-[1.8]">
+            {contentElement}
+          </div>
         )}
 
         {!articleLoading && !articleError && !hasContent && (
@@ -184,35 +164,15 @@ export function InlineReader({
         )}
       </div>
 
-      <div
-        className="flex min-w-0 items-center gap-2 px-5 py-3 border-t border-[var(--gray-4)] shrink-0"
-      >
-        <button
-          onClick={() => canGoPrev && onNavigate(currentIndex - 1)}
-          disabled={!canGoPrev}
-          className="flex items-center gap-1 text-[11px] text-[var(--gray-9)] hover:text-[var(--gray-12)] transition-colors px-2 py-1 rounded hover:bg-[var(--gray-3)] disabled:opacity-40 disabled:cursor-default disabled:hover:bg-transparent"
-        >
-          <ChevronLeft size={14} />
-          <span>{t("today.inline_reader.prev")}</span>
-        </button>
-
-        <div className="flex-1" />
-
-        <span className="min-w-0 break-words text-center text-[10px] text-[var(--gray-8)]">
-          {source.feed_title}
-        </span>
-
-        <div className="flex-1" />
-
-        <button
-          onClick={() => canGoNext && onNavigate(currentIndex + 1)}
-          disabled={!canGoNext}
-          className="flex items-center gap-1 text-[11px] text-[var(--gray-9)] hover:text-[var(--gray-12)] transition-colors px-2 py-1 rounded hover:bg-[var(--gray-3)] disabled:opacity-40 disabled:cursor-default disabled:hover:bg-transparent"
-        >
-          <span>{t("today.inline_reader.next")}</span>
-          <ChevronRight size={14} />
-        </button>
-      </div>
+      <ArticleNavFooter
+        canPrev={canGoPrev}
+        canNext={canGoNext}
+        onPrev={() => onNavigate(currentIndex - 1)}
+        onNext={() => onNavigate(currentIndex + 1)}
+        prevLabel={t("today.inline_reader.prev")}
+        nextLabel={t("today.inline_reader.next")}
+        label={source.feed_title}
+      />
     </div>
   );
 }
