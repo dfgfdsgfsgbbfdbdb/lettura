@@ -96,6 +96,22 @@ export function ArticleView() {
     [mutate],
   );
 
+  const handleArticleUpdate = useCallback(
+    (article: ArticleResItem, patch: Partial<ArticleResItem>) => {
+      mutate(
+        (pages: { list: ArticleResItem[] }[] | undefined) =>
+          pages?.map((page) => ({
+            ...page,
+            list: page.list.map((a) =>
+              a.uuid === article.uuid ? { ...a, ...patch } : a,
+            ),
+          })),
+        false,
+      );
+    },
+    [mutate],
+  );
+
   const handleExpandArticle = useCallback(
     (a: ArticleResItem) => {
       store.setExpandedArticleUuid(
@@ -225,6 +241,7 @@ export function ArticleView() {
         size={size}
         setSize={setSize}
         onArticleRead={handleArticleRead}
+        onArticleUpdate={handleArticleUpdate}
         expandedArticleUuid={store.expandedArticleUuid}
         onExpandArticle={handleExpandArticle}
         onCloseInlineReader={handleCloseInlineReader}

@@ -17,36 +17,28 @@ export interface StarAndReadProps {
 export function StarAndRead(props: StarAndReadProps) {
   const { article } = props;
   const { t } = useTranslation();
-  const [readStatus, setReadStatus] = useState<number>();
-  const [starred, setStarred] = useState<number>();
-  const [readLater, setReadLater] = useState<number>();
+  const [readStatus, setReadStatus] = useState<number>(article.read_status);
+  const [starred, setStarred] = useState<number>(article.starred);
+  const [readLater, setReadLater] = useState<number>(
+    article.is_read_later ?? ArticleReadLaterStatus.UNSAVED,
+  );
 
   function toggleReadStatus() {
-    let newStatus: number = 1;
-
-    if (readStatus === ArticleReadStatus.UNREAD) {
-      newStatus = ArticleReadStatus.READ;
-    } else {
-      newStatus = ArticleReadStatus.UNREAD;
-    }
-
+    const newStatus =
+      readStatus === ArticleReadStatus.UNREAD
+        ? ArticleReadStatus.READ
+        : ArticleReadStatus.UNREAD;
     dataAgent.updateArticleReadStatus(article.uuid, newStatus).then(() => {
-      article.read_status = newStatus;
       setReadStatus(newStatus);
     });
   }
 
   function toggleStarStatus() {
-    let newStarrStatus: number = 1;
-
-    if (starred === ArticleStarStatus.UNSTAR) {
-      newStarrStatus = ArticleStarStatus.STARRED;
-    } else {
-      newStarrStatus = ArticleStarStatus.UNSTAR;
-    }
-
+    const newStarrStatus =
+      starred === ArticleStarStatus.UNSTAR
+        ? ArticleStarStatus.STARRED
+        : ArticleStarStatus.UNSTAR;
     dataAgent.updateArticleStarStatus(article.uuid, newStarrStatus).then(() => {
-      article.starred = newStarrStatus;
       setStarred(newStarrStatus);
     });
   }
@@ -56,9 +48,7 @@ export function StarAndRead(props: StarAndReadProps) {
       readLater === ArticleReadLaterStatus.SAVED
         ? ArticleReadLaterStatus.UNSAVED
         : ArticleReadLaterStatus.SAVED;
-
     dataAgent.updateArticleReadLaterStatus(article.uuid, nextStatus).then(() => {
-      article.is_read_later = nextStatus;
       setReadLater(nextStatus);
     });
   }
@@ -77,38 +67,27 @@ export function StarAndRead(props: StarAndReadProps) {
 
   return (
     <div className="flex items-center gap-1">
-      {article.starred === ArticleStarStatus.UNSTAR && (
-        <Tooltip content={t("Star it")}>
-          <IconButton
-            variant="ghost"
-            size="2"
-            color="gray"
-            className="text-[var(--gray-12)]"
-            onClick={(e: React.MouseEvent<HTMLElement>) => {
-              e.stopPropagation();
-              toggleStarStatus();
-            }}
-          >
-            <Star size={16} />
-          </IconButton>
-        </Tooltip>
-      )}
-      {article.starred === ArticleStarStatus.STARRED && (
-        <Tooltip content={t("Unstar it")}>
-          <IconButton
-            variant="ghost"
-            size="2"
-            className="!text-[#fe9e2b] !hover:text-[#fe9e2b]"
-            color="gray"
-            onClick={(e: React.MouseEvent<HTMLElement>) => {
-              e.stopPropagation();
-              toggleStarStatus();
-            }}
-          >
-            <Star size={16} fill={"currentColor"} />
-          </IconButton>
-        </Tooltip>
-      )}
+      <Tooltip content={t(starred === ArticleStarStatus.STARRED ? "Unstar it" : "Star it")}>
+        <IconButton
+          variant="ghost"
+          size="2"
+          color="gray"
+          className={
+            starred === ArticleStarStatus.STARRED
+              ? "!text-[#fe9e2b]"
+              : "text-[var(--gray-12)]"
+          }
+          onClick={(e: React.MouseEvent<HTMLElement>) => {
+            e.stopPropagation();
+            toggleStarStatus();
+          }}
+        >
+          <Star
+            size={16}
+            fill={starred === ArticleStarStatus.STARRED ? "currentColor" : "none"}
+          />
+        </IconButton>
+      </Tooltip>
       <Tooltip
         content={
           readLater === ArticleReadLaterStatus.SAVED
@@ -132,44 +111,30 @@ export function StarAndRead(props: StarAndReadProps) {
         >
           <Bookmark
             size={16}
-            fill={
-              readLater === ArticleReadLaterStatus.SAVED
-                ? "currentColor"
-                : "none"
-            }
+            fill={readLater === ArticleReadLaterStatus.SAVED ? "currentColor" : "none"}
           />
         </IconButton>
       </Tooltip>
-      {article.read_status === ArticleReadStatus.UNREAD && (
-        <Tooltip content={t("Mark as read")}>
-          <IconButton
-            variant="ghost"
-            size="2"
-            color="gray"
-            className="text-[var(--gray-12)]"
-            onClick={(e: React.MouseEvent<HTMLElement>) => {
-              e.stopPropagation();
-              toggleReadStatus();
-            }}
-          >
-            <Eye size={16} />
-          </IconButton>
-        </Tooltip>
-      )}
-      {article.read_status === ArticleReadStatus.READ && (
-        <Tooltip content={t("Mark as unread")}>
-          <IconButton
-            variant="ghost"
-            size="2"
-            onClick={(e: React.MouseEvent<HTMLElement>) => {
-              e.stopPropagation();
-              toggleReadStatus();
-            }}
-          >
+      <Tooltip
+        content={t(readStatus === ArticleReadStatus.READ ? "Mark as unread" : "Mark as read")}
+      >
+        <IconButton
+          variant="ghost"
+          size="2"
+          color="gray"
+          className="text-[var(--gray-12)]"
+          onClick={(e: React.MouseEvent<HTMLElement>) => {
+            e.stopPropagation();
+            toggleReadStatus();
+          }}
+        >
+          {readStatus === ArticleReadStatus.READ ? (
             <EyeOff size={16} />
-          </IconButton>
-        </Tooltip>
-      )}
+          ) : (
+            <Eye size={16} />
+          )}
+        </IconButton>
+      </Tooltip>
     </div>
   );
 }

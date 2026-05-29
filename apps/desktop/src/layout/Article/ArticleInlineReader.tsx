@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 interface ArticleInlineReaderProps {
   article: ArticleResItem;
   onClose: () => void;
+  onUpdate?: (patch: Partial<ArticleResItem>) => void;
   goNext?: () => void;
   goPrev?: () => void;
   canPrev?: boolean;
@@ -51,6 +52,7 @@ function ToolbarBtn({
 export function ArticleInlineReader({
   article,
   onClose,
+  onUpdate,
   goNext,
   goPrev,
   canPrev = false,
@@ -67,13 +69,19 @@ export function ArticleInlineReader({
 
   const toggleStar = useCallback(() => {
     const next = starred === ArticleStarStatus.UNSTAR ? ArticleStarStatus.STARRED : ArticleStarStatus.UNSTAR;
-    dataAgent.updateArticleStarStatus(article.uuid, next).then(() => { article.starred = next; setStarred(next); });
-  }, [starred, article]);
+    dataAgent.updateArticleStarStatus(article.uuid, next).then(() => {
+      setStarred(next);
+      onUpdate?.({ starred: next });
+    });
+  }, [starred, article, onUpdate]);
 
   const toggleRead = useCallback(() => {
     const next = readStatus === ArticleReadStatus.UNREAD ? ArticleReadStatus.READ : ArticleReadStatus.UNREAD;
-    dataAgent.updateArticleReadStatus(article.uuid, next).then(() => { article.read_status = next; setReadStatus(next); });
-  }, [readStatus, article]);
+    dataAgent.updateArticleReadStatus(article.uuid, next).then(() => {
+      setReadStatus(next);
+      onUpdate?.({ read_status: next });
+    });
+  }, [readStatus, article, onUpdate]);
 
   const handleOpenOriginal = useCallback(() => {
     if (article.link) open(article.link);

@@ -9,10 +9,11 @@ import { StarAndRead } from "@/layout/Article/StarAndRead";
 import { IconButton } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
 import { ArticleResItem } from "@/db";
-import { ChevronLeft, X } from "lucide-react";
+import { ChevronLeft, ExternalLink, X } from "lucide-react";
 import { useBearStore } from "@/stores";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArticleNavFooter } from "@/components/ArticleNavFooter";
+import { open } from "@tauri-apps/plugin-shell";
 
 export interface ArticleViewProps {
   article: ArticleResItem | null;
@@ -99,6 +100,19 @@ export function View(props: ArticleViewProps) {
                 </button>
                 <div className="flex-1" />
                 {props.article && <StarAndRead article={props.article} />}
+                {props.article?.link && (
+                  <IconButton
+                    size="2"
+                    variant="ghost"
+                    color="gray"
+                    className="text-[var(--gray-10)]"
+                    aria-label={t("Open in browser")}
+                    title={t("Open in browser")}
+                    onClick={() => open(props.article!.link)}
+                  >
+                    <ExternalLink size={14} />
+                  </IconButton>
+                )}
                 {props.closable && (
                   <IconButton
                     size="2"
