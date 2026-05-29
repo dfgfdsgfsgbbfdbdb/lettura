@@ -6,6 +6,7 @@ import { ArticleReadStatus, ArticleStarStatus } from "@/typing";
 import * as dataAgent from "@/helpers/dataAgent";
 import { open } from "@tauri-apps/plugin-shell";
 import { useTranslation } from "react-i18next";
+import { ReaderIconBtn } from "@/components/ReaderIconBtn";
 
 interface ArticleInlineReaderProps {
   article: ArticleResItem;
@@ -19,35 +20,6 @@ interface ArticleInlineReaderProps {
   total: number;
 }
 
-function ToolbarBtn({
-  icon: Icon,
-  label,
-  active = false,
-  disabled = false,
-  onClick,
-}: {
-  icon: React.ElementType;
-  label?: string;
-  active?: boolean;
-  disabled?: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] transition-all disabled:opacity-40 disabled:cursor-default ${
-        active
-          ? "text-[var(--accent-9)]"
-          : "text-[var(--gray-9)] hover:bg-[var(--gray-3)] hover:text-[var(--gray-12)]"
-      }`}
-    >
-      <Icon size={13} />
-      {label && <span>{label}</span>}
-    </button>
-  );
-}
 
 export function ArticleInlineReader({
   article,
@@ -92,20 +64,26 @@ export function ArticleInlineReader({
     >
         {/* Toolbar — sticky so it stays visible while the outer list scrolls */}
         <div className="sticky top-0 z-10 flex items-center gap-0.5 px-3 py-1.5 border-b border-[var(--gray-4)] bg-[var(--gray-1)]">
-          <ToolbarBtn
+          <ReaderIconBtn
             icon={Star}
             label={t(starred === ArticleStarStatus.STARRED ? "Unstar it" : "Star it")}
             active={starred === ArticleStarStatus.STARRED}
+            showLabel
+            iconSize={13}
             onClick={toggleStar}
           />
-          <ToolbarBtn
+          <ReaderIconBtn
             icon={readStatus === ArticleReadStatus.READ ? EyeOff : Eye}
             label={t(readStatus === ArticleReadStatus.READ ? "Mark as unread" : "Mark as read")}
+            showLabel
+            iconSize={13}
             onClick={toggleRead}
           />
-          <ToolbarBtn
+          <ReaderIconBtn
             icon={ExternalLink}
             label={t("Open in browser")}
+            showLabel
+            iconSize={13}
             disabled={!article.link}
             onClick={handleOpenOriginal}
           />

@@ -11,6 +11,7 @@ import { ArticleNavFooter } from "@/components/ArticleNavFooter";
 import { ArticleReadStatus, ArticleStarStatus } from "@/typing";
 import * as dataAgent from "@/helpers/dataAgent";
 import { open } from "@tauri-apps/plugin-shell";
+import { ReaderIconBtn } from "@/components/ReaderIconBtn";
 
 interface InlineReaderProps {
   source: SignalSource;
@@ -35,36 +36,6 @@ function formatSourceDate(date?: string) {
   }
 }
 
-function HeaderAction({
-  icon: Icon,
-  label,
-  active = false,
-  disabled = false,
-  onClick,
-}: {
-  icon: React.ElementType;
-  label: string;
-  active?: boolean;
-  disabled?: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      title={label}
-      disabled={disabled}
-      onClick={onClick}
-      className={`p-1 rounded transition-colors disabled:cursor-default disabled:opacity-40 ${
-        active
-          ? "text-[var(--accent-9)]"
-          : "text-[var(--gray-9)] hover:bg-[var(--gray-3)] hover:text-[var(--gray-12)]"
-      }`}
-    >
-      <Icon size={14} fill={Icon === Star && active ? "currentColor" : "none"} />
-    </button>
-  );
-}
 
 export function InlineReader({
   source,
@@ -159,14 +130,14 @@ export function InlineReader({
           {t("today.inline_reader.source_of", { current: currentIndex + 1, total: sources.length })}
         </span>
 
-        <HeaderAction
+        <ReaderIconBtn
           icon={ExternalLink}
           label={t("Open in browser")}
           disabled={!source.link}
           onClick={handleOpenOriginal}
         />
 
-        <HeaderAction
+        <ReaderIconBtn
           icon={Star}
           label={t(isStarred ? "Unstar it" : "Star it")}
           active={isStarred}
@@ -174,7 +145,7 @@ export function InlineReader({
           onClick={toggleStar}
         />
 
-        <HeaderAction
+        <ReaderIconBtn
           icon={isRead ? EyeOff : Eye}
           label={t(isRead ? "Mark as unread" : "Mark as read")}
           disabled={!articleUuid}
