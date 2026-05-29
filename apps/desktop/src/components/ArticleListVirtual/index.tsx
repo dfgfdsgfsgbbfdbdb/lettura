@@ -126,6 +126,7 @@ export const ArticleListVirtual = React.memo(
                       article={article}
                       onRead={onArticleRead}
                       onExpand={onExpandArticle}
+                      onUpdate={(patch) => onArticleUpdate?.(article, patch)}
                     />
                     {isExpanded && (
                       <ArticleInlineReader

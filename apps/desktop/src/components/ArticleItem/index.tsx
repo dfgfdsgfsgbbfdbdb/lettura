@@ -16,6 +16,7 @@ export const ArticleItem = React.forwardRef(
       article: ArticleResItem;
       onRead?: (article: ArticleResItem) => void;
       onExpand?: (article: ArticleResItem) => void;
+      onUpdate?: (patch: Partial<ArticleResItem>) => void;
     },
     ref: ForwardedRef<HTMLDivElement>,
   ) => {
@@ -27,10 +28,11 @@ export const ArticleItem = React.forwardRef(
         expandedArticleUuid: state.expandedArticleUuid,
       })),
     );
-    const { article, onRead, onExpand } = props;
+    const { article, onRead, onExpand, onUpdate } = props;
     const navigate = useNavigate();
     const [highlight, setHighlight] = useState<boolean>();
     const [readStatus, setReadStatus] = useState(article.read_status);
+    const [starred, setStarred] = useState(article.starred);
 
     const markAsRead = (article: ArticleResItem) => {
       if (article.read_status === ArticleReadStatus.UNREAD) {
@@ -78,6 +80,10 @@ export const ArticleItem = React.forwardRef(
     useEffect(() => {
       setReadStatus(article.read_status);
     }, [article.read_status]);
+
+    useEffect(() => {
+      setStarred(article.starred);
+    }, [article.starred]);
 
     useEffect(() => {
       const isArticleMatch = store.article?.id === article.id;
@@ -143,17 +149,28 @@ export const ArticleItem = React.forwardRef(
         <div className="flex-shrink-0 flex items-center opacity-0 group-hover:opacity-100 transition-opacity gap-0.5 mt-0.5">
           <button
             type="button"
-            className="w-6 h-6 rounded flex items-center justify-center hover:bg-[var(--gray-a4)] text-[var(--gray-9)]"
+            className={clsx(
+              "w-6 h-6 rounded flex items-center justify-center hover:bg-[var(--gray-a4)] transition-colors",
+              starred === ArticleStarStatus.STARRED
+                ? "text-[#fe9e2b]"
+                : "text-[var(--gray-9)]",
+            )}
             onClick={(e) => {
               e.stopPropagation();
               const next =
-                article.starred === ArticleStarStatus.STARRED
+                starred === ArticleStarStatus.STARRED
                   ? ArticleStarStatus.UNSTAR
                   : ArticleStarStatus.STARRED;
-              dataAgent.updateArticleStarStatus(article.uuid, next);
+              dataAgent.updateArticleStarStatus(article.uuid, next).then(() => {
+                setStarred(next);
+                onUpdate?.({ starred: next });
+              });
             }}
           >
-            <Star size={11} />
+            <Star
+              size={11}
+              fill={starred === ArticleStarStatus.STARRED ? "currentColor" : "none"}
+            />
           </button>
           <button
             type="button"
