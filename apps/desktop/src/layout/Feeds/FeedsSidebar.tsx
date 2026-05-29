@@ -39,8 +39,7 @@ export const FeedsSidebar = React.memo(function FeedsSidebar() {
     let warning = 0;
     let error = 0;
     feeds.forEach((f) => {
-      if (f.health_status === 2) error++;
-      else if (f.health_status === 1) warning++;
+      if (f.health_status === 1) error++;
       else healthy++;
     });
     return { healthy, warning, error };
@@ -118,10 +117,6 @@ export const FeedsSidebar = React.memo(function FeedsSidebar() {
           <span className="flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-green-500" />
             <span className="text-[var(--text-secondary)]">{healthSummary.healthy}</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-amber-500" />
-            <span className="text-[var(--text-secondary)]">{healthSummary.warning}</span>
           </span>
           <span className="flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-red-500" />
