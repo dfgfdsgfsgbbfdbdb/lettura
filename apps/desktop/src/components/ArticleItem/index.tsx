@@ -88,11 +88,11 @@ export const ArticleItem = React.forwardRef(
     return (
       <div
         className={clsx(
-          "border-b border-[var(--gray-4)] flex items-start gap-2 px-4 py-2.5 select-none transition-colors cursor-pointer group border-l-2",
+          "border-b border-[var(--gray-4)] flex items-start gap-2 px-4 py-2.5 select-none transition-colors cursor-pointer group",
           "hover:bg-[var(--gray-a3)]",
           highlight
-            ? "bg-[var(--accent-a2)] hover:bg-[var(--accent-a2)] border-l-[var(--accent-9)]"
-            : "border-l-transparent",
+            ? "bg-[var(--accent-a2)] hover:bg-[var(--accent-a2)] shadow-[inset_3px_0_0_var(--accent-9)]"
+            : "",
         )}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
