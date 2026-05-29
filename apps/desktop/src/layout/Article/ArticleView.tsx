@@ -1,8 +1,8 @@
-import { useRef, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useParams, useMatch } from "react-router-dom";
 import { CheckCheck, RefreshCw } from "lucide-react";
-import { ArticleListVirtual, ArticleListVirtualRefType } from "@/components/ArticleListVirtual";
+import { ArticleListVirtual } from "@/components/ArticleListVirtual";
 import { ArticleDialogView } from "@/components/ArticleView/DialogView";
 import { open } from "@tauri-apps/plugin-shell";
 import { useQuery } from "@/helpers/parseXML";
@@ -23,7 +23,6 @@ export function ArticleView() {
   const [, type, queryFeedUuid] = useQuery();
   const params = useParams<{ uuid?: string; id?: string }>();
   const isArticleRoute = useMatch(RouteConfig.LOCAL_ARTICLE);
-  const listRef = useRef<ArticleListVirtualRefType | null>(null);
 
   const feedUuid = params.uuid ?? queryFeedUuid;
 
@@ -230,7 +229,6 @@ export function ArticleView() {
 
       {/* Article list */}
       <ArticleListVirtual
-        ref={listRef}
         articles={articles}
         title={title}
         type={type}

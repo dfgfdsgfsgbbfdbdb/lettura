@@ -1,7 +1,6 @@
 import React, {
   useEffect,
   useRef,
-  useImperativeHandle,
   useState,
 } from "react";
 import { ArticleItem } from "../ArticleItem";
@@ -28,16 +27,9 @@ export type ArticleListVirtualProps = {
   onCloseInlineReader?: () => void;
 };
 
-export interface ArticleListVirtualRefType {
-  getList: () => void;
-  markAllRead: () => void;
-  articlesRef: any;
-  innerRef: React.RefObject<HTMLDivElement>;
-}
-
-export const ArticleListVirtual = React.memo(
-  React.forwardRef<ArticleListVirtualRefType, ArticleListVirtualProps>(
-    (props: ArticleListVirtualProps, ref) => {
+export const ArticleListVirtual = React.memo(function ArticleListVirtual(
+  props: ArticleListVirtualProps,
+) {
       const {
         articles,
         isEmpty,
@@ -70,17 +62,6 @@ export const ArticleListVirtual = React.memo(
           container.getBoundingClientRect().top;
         container.scrollTo({ top: container.scrollTop + delta, behavior: "smooth" });
       }, [expandedArticleUuid]);
-
-      useImperativeHandle(
-        ref,
-        () => ({
-          getList: () => console.log("getList called"),
-          markAllRead: () => console.log("markAllRead called"),
-          articlesRef: containerRef,
-          innerRef: containerRef,
-        }),
-        [],
-      );
 
       useEffect(() => {
         const container = containerRef.current;
@@ -163,8 +144,6 @@ export const ArticleListVirtual = React.memo(
           )}
         </div>
       );
-    },
-  ),
-);
+});
 
 export default ArticleListVirtual;
