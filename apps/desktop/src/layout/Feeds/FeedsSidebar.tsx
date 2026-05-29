@@ -36,13 +36,12 @@ export const FeedsSidebar = React.memo(function FeedsSidebar() {
       s.item_type === "folder" ? s.children || [] : [s],
     );
     let healthy = 0;
-    let warning = 0;
     let error = 0;
     feeds.forEach((f) => {
       if (f.health_status === 1) error++;
       else healthy++;
     });
-    return { healthy, warning, error };
+    return { healthy, error };
   }, [subscribes]);
 
   const ungroupedCount = useMemo(
@@ -52,19 +51,19 @@ export const FeedsSidebar = React.memo(function FeedsSidebar() {
 
   const filterBtnClass = (active: boolean) =>
     active
-      ? "flex items-center gap-2 px-3.5 py-1.5 text-xs rounded-[var(--radius-sm)] bg-[var(--accent-light)] text-[var(--accent-text)] cursor-pointer"
-      : "flex items-center gap-2 px-3.5 py-1.5 text-xs rounded-[var(--radius-sm)] cursor-pointer hover:bg-[var(--accent-light)] text-[var(--text-secondary)]";
+      ? "flex items-center gap-2 px-3.5 py-1.5 text-xs rounded-md bg-[var(--workbench-accent-soft)] text-[var(--workbench-accent-text)] cursor-pointer"
+      : "flex items-center gap-2 px-3.5 py-1.5 text-xs rounded-md cursor-pointer hover:bg-[var(--workbench-accent-soft)] text-[var(--gray-11)]";
 
   return (
     <>
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-[10px] font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">
+        <span className="text-[10px] font-semibold uppercase tracking-wide text-[var(--gray-9)]">
           {t("feeds.sidebar.folders")}
         </span>
         <button
           type="button"
           onClick={() => setAddFeedModalOpen(true)}
-          className="rounded p-0.5 text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
+          className="rounded p-0.5 text-[var(--gray-9)] hover:text-[var(--gray-11)]"
         >
           <Plus size={12} />
         </button>
@@ -76,7 +75,7 @@ export const FeedsSidebar = React.memo(function FeedsSidebar() {
           onClick={() => setFolderFilter(null)}
           className={filterBtnClass(folderFilter === null)}
         >
-          <span className="w-2 h-2 rounded-full bg-green-500" />
+          <span className="w-2 h-2 rounded-full bg-[var(--green-9)]" />
           <span>{t("feeds.all_sources")}</span>
           <span className="ml-auto text-[10px] opacity-60">{totalFeeds}</span>
         </button>
@@ -110,17 +109,17 @@ export const FeedsSidebar = React.memo(function FeedsSidebar() {
       </div>
 
       <div className="border-t border-[var(--gray-5)] mt-3 pt-3">
-        <div className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[var(--text-tertiary)]">
+        <div className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[var(--gray-9)]">
           {t("feeds.health_overview")}
         </div>
         <div className="flex items-center gap-3 text-xs">
           <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-green-500" />
-            <span className="text-[var(--text-secondary)]">{healthSummary.healthy}</span>
+            <span className="w-2 h-2 rounded-full bg-[var(--green-9)]" />
+            <span className="text-[var(--gray-11)]">{healthSummary.healthy}</span>
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-red-500" />
-            <span className="text-[var(--text-secondary)]">{healthSummary.error}</span>
+            <span className="w-2 h-2 rounded-full bg-[var(--red-9)]" />
+            <span className="text-[var(--gray-11)]">{healthSummary.error}</span>
           </span>
         </div>
       </div>
