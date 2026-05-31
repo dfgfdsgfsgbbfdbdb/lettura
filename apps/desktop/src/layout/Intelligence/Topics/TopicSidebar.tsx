@@ -117,7 +117,7 @@ export function TopicSidebar({
 			</div>
 
 			{trackedForPick.length > 0 && (
-				<div className="px-3 py-2 flex-1 overflow-auto">
+				<div className="px-3 py-2 flex-1 overflow-auto scrollbar-gutter">
 					<Text
 						size="1"
 						weight="medium"

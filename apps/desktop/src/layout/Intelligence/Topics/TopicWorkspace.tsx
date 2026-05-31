@@ -83,7 +83,7 @@ export function TopicWorkspace() {
 		<div
 			className="grid h-full"
 			style={{
-				gridTemplateColumns: "236px minmax(360px, 1fr) 420px",
+				gridTemplateColumns: "276px minmax(360px, 1fr) 420px",
 				gridTemplateRows: "1fr",
 			}}
 		>
