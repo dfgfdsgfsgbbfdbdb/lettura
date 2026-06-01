@@ -96,7 +96,6 @@ const root = createRoot(domNode);
 
 if (typeof (window as any).__TAURI_INTERNALS__ !== "undefined") {
   invoke("get_server_port").then((port) => {
-    console.log("🚀 ~ invoke ~ port:", port);
     window.localStorage.setItem("port", port as string);
     root.render(<RouterProvider router={router} />);
   });

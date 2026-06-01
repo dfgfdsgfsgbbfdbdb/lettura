@@ -19,7 +19,7 @@ export interface ArticleSlice {
     article: ArticleResItem,
     status: ArticleReadStatus,
   ) => any;
-  updateArticleAndIdx: (ArticleResItem: ArticleResItem, idx?: number) => void;
+  updateArticleAndIdx: (ArticleResItem: ArticleResItem) => void;
 
   hasMorePrev: boolean;
   setHasMorePrev: (more: boolean) => void;
@@ -45,7 +45,7 @@ export const createArticleSlice: StateCreator<
   [],
   [],
   ArticleSlice
-> = (set, get, ...args) => ({
+> = (set, get) => ({
   article: null,
   rightPanelExpanded: false,
   setArticle: (ArticleResItem: ArticleResItem | null) => {
@@ -96,11 +96,6 @@ export const createArticleSlice: StateCreator<
           ).isSame(dayjs().format("YYYY-MM-DD"));
 
           if (status === ArticleReadStatus.READ) {
-            console.log(
-              "%c Line:80 🥪 ArticleReadStatus.READ",
-              "color:#f5ce50",
-              ArticleReadStatus.READ,
-            );
             get().updateCollectionMeta(isToday ? -1 : 0, -1);
             get().updateUnreadCount(article.feed_uuid, "decrease", 1);
           }
@@ -113,7 +108,7 @@ export const createArticleSlice: StateCreator<
       });
   },
 
-  updateArticleAndIdx: (article: ArticleResItem, idx?: number) => {
+  updateArticleAndIdx: (article: ArticleResItem) => {
     set(() => ({
       article,
     }));
@@ -160,7 +155,6 @@ export const createArticleSlice: StateCreator<
 
     return dataAgent.markAllRead(params).then((res) => {
       const { data } = res;
-      console.log("%c Line:131 🍖 data", "color:#e41a6a", data);
       set(() => ({
         articleList: get().articleList.map((_) => {
           _.read_status = 2;
