@@ -21,10 +21,11 @@ export type ArticleListVirtualProps = {
   isEmpty: boolean;
   isLoading: boolean;
   onArticleRead?: (article: ArticleResItem) => void;
-  onArticleUpdate?: (article: ArticleResItem, patch: Partial<ArticleResItem>) => void;
+  onArticleUpdate?: (updated: ArticleResItem) => void;
   expandedArticleUuid?: string | null;
   onExpandArticle?: (article: ArticleResItem) => void;
   onCloseInlineReader?: () => void;
+  sectionLabel?: string;
 };
 
 export const ArticleListVirtual = React.memo(function ArticleListVirtual(
@@ -42,6 +43,7 @@ export const ArticleListVirtual = React.memo(function ArticleListVirtual(
         expandedArticleUuid,
         onExpandArticle,
         onCloseInlineReader,
+        sectionLabel,
       } = props;
       const { t } = useTranslation();
       const containerRef = useRef<HTMLDivElement>(null);
@@ -99,6 +101,9 @@ export const ArticleListVirtual = React.memo(function ArticleListVirtual(
             </div>
           ) : (
             <div>
+              {sectionLabel && (
+                <div className="art-section-label">{sectionLabel}</div>
+              )}
               {articles.map((article, index) => {
                 const isExpanded = expandedArticleUuid === article.uuid;
                 return (
@@ -107,19 +112,19 @@ export const ArticleListVirtual = React.memo(function ArticleListVirtual(
                       article={article}
                       onRead={onArticleRead}
                       onExpand={onExpandArticle}
-                      onUpdate={(patch) => onArticleUpdate?.(article, patch)}
+                      onUpdate={(patch) => onArticleUpdate?.({ ...article, ...patch })}
                     />
                     {isExpanded && (
                       <ArticleInlineReader
                         article={article}
                         onClose={onCloseInlineReader!}
-                        onUpdate={(patch) => onArticleUpdate?.(article, patch)}
                         goPrev={index > 0 ? () => onExpandArticle?.(articles[index - 1]) : undefined}
                         goNext={index < articles.length - 1 ? () => onExpandArticle?.(articles[index + 1]) : undefined}
                         canPrev={index > 0}
                         canNext={index < articles.length - 1}
                         index={index}
                         total={articles.length}
+                        onArticleUpdate={onArticleUpdate}
                       />
                     )}
                   </div>

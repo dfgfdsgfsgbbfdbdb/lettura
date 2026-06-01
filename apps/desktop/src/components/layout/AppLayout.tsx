@@ -62,7 +62,7 @@ export const AppLayout = React.memo(function () {
     <div className="flex flex-row h-full bg-canvas">
       <Rail />
       {showSidebar && (
-        <div className="h-full w-[220px] shrink-0 overflow-hidden">
+        <div className="h-full w-[276px] shrink-0 overflow-hidden">
           <Sidebar
             collapsed={false}
             onToggle={toggleSidebar}
